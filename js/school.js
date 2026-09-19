@@ -2,6 +2,7 @@
 G.scenes.school = (() => {
   const DUR = 55; // saniye: okula varış
   const ITEMS = ['✏️', '📒', '🍎', '🧃', '📐', '🖍️', '📚', '🎒'];
+  const SIGNS = ['LİNA TOWERS', 'TURUNCU KULE', 'LİNA MARİNA', 'PORTAKAL PLAZA', 'SAHİL REZİDANS', 'LİNA KONAKLARI'];
   let hair, t, speed, dist, lina, obs, items, score, bag, hits, state, walkT, endX, camShake, msgs, spawnT, cloudsY;
   const groundY = () => G.H * .80;
   function reset() { hair = Art.makeHair(7); t = 0; speed = 330; dist = 0; lina = { y: 0, vy: 0, jumps: 0, slide: 0, hurt: 0 }; obs = []; items = []; score = 0; bag = 0; hits = 0; state = 'intro'; walkT = 0; camShake = 0; msgs = []; spawnT = 1.2; }
@@ -49,7 +50,7 @@ G.scenes.school = (() => {
       c.save(); if (camShake > 0) c.translate((Math.random() - .5) * 10 * camShake, (Math.random() - .5) * 8 * camShake);
       Art.sky(c, W, H, dayT, gy - 120); Art.clouds(c, W, 90, dayT, 30, .9);
       // uzak: skyline
-      Art.skyline(c, W, gy - 118, dayT, '#6f93bf', dist * .15);
+      Art.skyline(c, W, gy - 118, dayT, '#6f93bf', dist * .15, SIGNS);
       Art.sea(c, W, gy - 120, gy - 40, dayT); Art.sailboats(c, W, gy - 70, dayT);
       // korkuluk
       c.fillStyle = '#e9eef5'; c.fillRect(0, gy - 60, W, 6); for (let x = -(dist * .8 % 60); x < W; x += 60) c.fillRect(x, gy - 60, 6, 22);

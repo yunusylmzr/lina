@@ -44,11 +44,23 @@ G.scenes.title = (() => {
     const p = G.panel(`<h2>Oyuncular</h2><p>Lina, annesi Hacer ve babası Serkan her zaman oyunda. Yanlarına en fazla üç kişi ekleyebilirsin: arkadaşı, kuzeni, kim istersen.</p>
       <div class="cast" id="c">${['lina', 'serkan', 'hacer'].map(k => `<div class="one" data-k="${k}"><span class="av"></span>${G.PEOPLE[k].name}</div>`).join('')}
         ${mine.map(c => `<div class="one" data-k="${c.id}"><span class="av"></span>${c.name}<button class="x" data-del="${c.id}" aria-label="Çıkar">×</button></div>`).join('')}</div>
-      <div class="actions">${mine.length < 3 ? '<button class="btn" data-a="add">Karakter ekle</button>' : '<span class="badge">Üç kişi tamam</span>'}<button class="btn coral" data-a="ok">Tamam</button></div>`);
+      <div class="actions"><button class="btn ghost" data-a="rst">Baştan başla</button>${mine.length < 3 ? '<button class="btn" data-a="add">Karakter ekle</button>' : '<span class="badge">Üç kişi tamam</span>'}<button class="btn coral" data-a="ok">Tamam</button></div>`);
     p.querySelectorAll('.one').forEach(el => el.querySelector('.av').replaceWith(Art.avatar(el.dataset.k, 56)));
     p.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { G.S.people = G.S.people.filter(c => c.id !== b.dataset.del); G.save(); G.invalidate(); Audio.sfx('whoosh'); cast(); });
     p.querySelector('[data-a=add]')?.addEventListener('click', maker);
+    p.querySelector('[data-a=rst]').onclick = resetAsk;
     p.querySelector('[data-a=ok]').onclick = () => { G.closePanels(); Audio.sfx('pop'); home(); };
+  }
+  function resetAsk() {
+    G.closePanels();
+    const p = G.panel(`<h2>Baştan başla</h2>
+      <p class="lead">Lina'ya vermeden önce oyunu sıfırlayabilirsin.</p>
+      <p><b>İlerlemeyi sil:</b> yıldızlar, bölüm yıldızları, en iyi skorlar, gün sayısı ve mağazadan açılanlar sıfırlanır. Eklediğin karakterler ve çizdiğin resimler kalır.<br><b>Her şeyi sil:</b> karakterler ve resim galerisi de gider.</p>
+      <div class="actions"><button class="btn ghost" data-a="x">Vazgeç</button><button class="btn" data-a="p">İlerlemeyi sil</button><button class="btn coral" data-a="f">Her şeyi sil</button></div>`);
+    p.querySelector('[data-a=x]').onclick = () => { Audio.sfx('tap'); cast(); };
+    const go = full => { G.reset(full); G.invalidate(); G.updateStars(); Audio.sfx('whoosh'); G.toast(full ? 'Oyun tamamen sıfırlandı' : 'İlerleme sıfırlandı'); G.go('title'); };
+    p.querySelector('[data-a=p]').onclick = () => go(false);
+    p.querySelector('[data-a=f]').onclick = () => go(true);
   }
   function home() {
     G.closePanels();
@@ -57,13 +69,14 @@ G.scenes.title = (() => {
       <h2 style="font-size:clamp(34px,6vw,58px);color:#fff">Lina'nın<br><span style="color:var(--orange)">Turuncu</span> Günü</h2>
       <p style="color:#d9e4f0">Sabah okul yolu, öğleden sonra piyano ve resim, akşam AVM turu ve suşi… Bugün Tuzla'da Lina'nın günü.</p>
       <div class="actions center"><button class="btn big" id="start">${G.S.days > 0 || G.S.totalStars > 0 ? 'Devam et' : 'Güne başla'}</button></div>
-      <div class="actions center" style="margin-top:6px"><button class="btn ghost" id="cast">Oyuncular${G.S.people.length ? ` · ${G.S.people.length + 3}` : ''}</button></div>
+      <div class="actions center" style="margin-top:6px"><button class="btn ghost" id="cast">Oyuncular${G.S.people.length ? ` · ${G.S.people.length + 3}` : ''}</button>${G.S.totalStars > 0 || G.S.days > 0 ? '<button class="btn ghost" id="rst">Baştan başla</button>' : ''}</div>
       ${G.S.totalStars > 0 ? `<p style="color:#b6c6d8;font-size:15px;margin:6px 0 0">Toplam ★ ${G.S.totalStars} · ${G.S.days} gün tamamlandı</p>` : ''}
     </div>`, 'dark bottom');
     p.style.width = 'min(520px,calc(100vw - 32px))';
     if (G.W > 700) { p.style.left = 'auto'; p.style.right = '24px'; p.style.transform = 'none'; p.style.bottom = '50%'; p.style.translate = '0 50%'; }
     p.querySelector('#start').onclick = () => { Audio.unlock(); Audio.sfx('pop'); G.go('hub'); };
     p.querySelector('#cast').onclick = () => { Audio.unlock(); Audio.sfx('tap'); cast(); };
+    p.querySelector('#rst')?.addEventListener('click', () => { Audio.unlock(); Audio.sfx('tap'); resetAsk(); });
   }
   return {
     landscape: false,

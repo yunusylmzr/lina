@@ -20,10 +20,14 @@ Lina için yapılmış, iPad'de (Safari) oynanan kişisel bir oyun. Tuzla sahili
 ## Serkan Dijital
 Oyunun içindeki mağaza. Para yok, her şey toplanan yıldızlarla açılır: kıyafetler, saç aksesuarları, piyano için ek şarkılar ve atölye için damga paketleri.
 
+## Baştan başlamak
+Giriş ekranında ilerleme varken **Baştan başla** düğmesi çıkar (Oyuncular panelinde de var). İki seçenek sunar: *İlerlemeyi sil* yıldızları, bölüm yıldızlarını, en iyi skorları, gün sayısını ve mağazadan açılanları sıfırlar, eklenen karakterleri ve resim galerisini korur; *Her şeyi sil* onları da temizler.
+
 ## Teknik
 - Saf HTML/CSS/JS, tek `canvas` + DOM paneller; harici kütüphane yok. Ses WebAudio ile sentezlenir.
 - Lina'nın saçı Verlet zinciriyle simüle edilir (`js/art.js`).
 - Kayıt `localStorage`'da (`lina-turuncu-gun-v1`).
+- Arka plan siluetindeki binalar kaydırmada kimliğini korur, bazılarının çatısında Lina'ya özel tabelalar vardır (LİNA TOWERS, TURUNCU KULE…).
 - iPad'de **Paylaş → Ana Ekrana Ekle** ile tam ekran açılır.
 
 Yerel çalıştırma: klasörde `python3 -m http.server 8765` ve tarayıcıda `http://localhost:8765`.

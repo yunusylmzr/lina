@@ -18,6 +18,13 @@ const G = (() => {
   });
   let S = defaults();
   const load = () => { try { const j = JSON.parse(localStorage.getItem(SAVE_KEY)); if (j) S = Object.assign(defaults(), j); } catch (e) {} };
+  // baştan başla: full=true ise eklenen karakterler ve galeri de silinir
+  function reset(full) {
+    const keep = full ? { people: [], gallery: [] } : { people: S.people || [], gallery: S.gallery || [] };
+    const d = Object.assign(defaults(), keep, { muted: S.muted });
+    for (const k of Object.keys(S)) delete S[k];
+    Object.assign(S, d); save();
+  }
   const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
   load();
 
@@ -171,7 +178,7 @@ const G = (() => {
   const cast = () => ['serkan', 'hacer'].concat((S.people || []).map(c => c.id));
   const guests = () => (S.people || []).map(c => c.id);
 
-  return { S, save, load, invalidate, cv, ctx, get W() { return W; }, get H() { return H; }, get T() { return T; }, get scene() { return sceneName; },
+  return { S, save, load, invalidate, reset, cv, ctx, get W() { return W; }, get H() { return H; }, get T() { return T; }, get scene() { return sceneName; },
     scenes, go, panel, closePanels, toast, addStars, burst, star, finish, clamp, lerp, rnd, pick, ease, rrect, txt, txtShadow, get PEOPLE() { return people(); }, cast, guests, resize, updateStars, pointers,
     start() { resize(); requestAnimationFrame(loop); } };
 })();

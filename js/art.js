@@ -266,14 +266,32 @@ const Art = (() => {
     c.fillStyle = 'rgba(255,240,200,.18)'; c.fillRect(0, y0, W, 3);
   }
   // Tuzla siluet: apartmanlar, marina yelkenleri, tersane vinçleri
-  function skyline(c, W, y, t, color = '#274b73', par = 0) {
-    c.fillStyle = color;
-    let x = -par % 160 - 40; let i = 0;
-    while (x < W + 60) { const w = 60 + (i * 37) % 70, h = 50 + (i * 53) % 110; c.fillRect(x, y - h, w, h);
-      // pencereler
-      if (t > .65) { c.fillStyle = 'rgba(255,220,140,.75)'; for (let wy = y - h + 10; wy < y - 12; wy += 16) for (let wx = x + 8; wx < x + w - 10; wx += 16) if ((wx * 7 + wy * 13 + i) % 5 < 3) c.fillRect(wx, wy, 7, 9); c.fillStyle = color; }
-      x += w + 14; i++; }
-    // vinç
+  // par kaydırıldığında binalar kimliğini korur; signs verilirse bazı çatılara tabela konur
+  function skyline(c, W, y, t, color = '#274b73', par = 0, signs = null) {
+    const pitch = 132;
+    const rnd = (i, n) => { const v = Math.sin(i * 12.9898 + n * 78.233) * 43758.5453; return v - Math.floor(v); };
+    const i0 = Math.floor((par - pitch) / pitch), i1 = Math.ceil((par + W + pitch) / pitch);
+    const night = t > .65;
+    for (let i = i0; i <= i1; i++) {
+      const w = 58 + rnd(i, 1) * 56, h = 52 + rnd(i, 2) * 138;
+      const x = Math.round(i * pitch - par + (pitch - w) / 2);
+      c.fillStyle = color; c.fillRect(x, y - h, w, h);
+      if (night) { c.fillStyle = 'rgba(255,220,140,.75)'; for (let r = 0, wy = y - h + 12; wy < y - 14; wy += 17, r++) for (let k = 0, wx = x + 8; wx < x + w - 10; wx += 16, k++) if (rnd(i, 7 + r * 9 + k) > .45) c.fillRect(wx, wy, 7, 9); }
+      // çatı tabelası
+      if (signs && signs.length && h > 132 && ((i % 3) + 3) % 3 === 1 && !(x + w / 2 > W * .72 && x + w / 2 < W * .95)) {
+        const label = signs[(((i / 3) | 0) % signs.length + signs.length) % signs.length];
+        const bw = Math.max(w + 40, 132), bh = 34, bx = x + w / 2 - bw / 2, by = y - h - bh - 14;
+        c.fillStyle = 'rgba(20,26,48,.92)'; c.beginPath(); c.roundRect(bx, by, bw, bh, 7); c.fill();
+        c.fillStyle = 'rgba(255,255,255,.12)'; c.fillRect(bx + 4, by + 3, bw - 8, 2);
+        c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 2; c.beginPath(); c.moveTo(bx + bw * .3, by + bh); c.lineTo(bx + bw * .3, y - h); c.moveTo(bx + bw * .7, by + bh); c.lineTo(bx + bw * .7, y - h); c.stroke();
+        let fs = 22; c.font = `600 ${fs}px Fredoka, sans-serif`;
+        while (c.measureText(label).width > bw - 18 && fs > 10) { fs -= 1; c.font = `600 ${fs}px Fredoka, sans-serif`; }
+        c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.shadowColor = '#ff7a1a'; c.shadowBlur = night ? 16 : 6;
+        c.fillStyle = '#ffb570'; c.fillText(label, bx + bw / 2, by + bh / 2 + 1);
+        c.shadowBlur = 0;
+      }
+    }
     c.strokeStyle = color; c.lineWidth = 6; c.beginPath(); c.moveTo(W * .82, y); c.lineTo(W * .82, y - 200); c.lineTo(W * .82 + 110, y - 180); c.moveTo(W * .82, y - 200); c.lineTo(W * .82 - 50, y - 180); c.stroke();
   }
   function sailboats(c, W, y, t) {
