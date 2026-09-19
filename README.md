@@ -30,4 +30,6 @@ Giriş ekranında ilerleme varken **Baştan başla** düğmesi çıkar (Oyuncula
 - Arka plan siluetindeki binalar kaydırmada kimliğini korur, bazılarının çatısında Lina'ya özel tabelalar vardır (LİNA TOWERS, TURUNCU KULE…).
 - iPad'de **Paylaş → Ana Ekrana Ekle** ile tam ekran açılır.
 
+Yayına yeni sürüm gönderirken önce `./bump.sh` çalıştır: `index.html` içindeki js ve css adreslerine sürüm etiketi basar, böylece tarayıcılar eski dosyayı önbellekten vermez.
+
 Yerel çalıştırma: klasörde `python3 -m http.server 8765` ve tarayıcıda `http://localhost:8765`.
