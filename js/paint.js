@@ -10,7 +10,9 @@ G.scenes.paint = (() => {
     tmplCv = mk(layer.width, layer.height); const c = tmplCv.getContext('2d'); c.scale(2, 2);
     if (template === 'lina') { Art.char(c, 'lina', G.W / 2, G.H * .82, Math.min(2.4, G.H / 300), { face: 'happy', arms: 'wave' }); }
     else if (template === 'sushi') { c.font = `${Math.min(220, G.W / 5)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; ['🍣', '🍱', '🐟', '🥢'].forEach((e, i) => c.fillText(e, G.W * (.2 + i * .2), G.H * .5 + (i % 2) * 60)); }
-    else if (template === 'tuzla') { Art.skyline(c, G.W, G.H * .6, .3, '#333'); Art.sailboats(c, G.W, G.H * .72, .3); }
+    else if (template === 'tuzla') { Art.skyline(c, G.W, G.H * .6, .3, '#333', 0, ['LİNA TOWERS', 'TURUNCU KULE']); Art.sailboats(c, G.W, G.H * .72, .3); }
+    else if (template === 'kedi') { c.font = `${Math.min(300, G.W / 3)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🐱', G.W / 2, G.H * .45); c.font = `${Math.min(110, G.W / 8)}px serif`; c.fillText('🧶', G.W * .74, G.H * .72); }
+    else if (template === 'kurabiye') { c.font = `${Math.min(150, G.W / 6)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; ['🍪', '🍪', '🥛', '🍪'].forEach((e, i) => c.fillText(e, G.W * (.25 + (i % 2) * .4), G.H * (.38 + Math.floor(i / 2) * .28))); }
     else return;
     // griye çevir + soluklaştır (boyama şablonu)
     const im = c.getImageData(0, 0, tmplCv.width, tmplCv.height), d = im.data;
@@ -62,7 +64,8 @@ G.scenes.paint = (() => {
     landscape: false, showHome: true, showStars: true,
     enter() { tool = 'pen'; color = '#ff7a1a'; size = 12; stamp = '🍣'; undo = []; strokes = 0; template = 'blank'; hair = Art.makeHair(5); layer = null; ensureLayer(); Audio.ambience(false);
       const p = G.panel(`<h2>Karalama Atölyesi</h2><p class="lead">Ne çizmek istersin?</p><div class="grid">
-        <div class="item" data-t="blank"><div class="em">⬜️</div>Boş kâğıt</div><div class="item" data-t="lina"><div class="em">👧</div>Lina'yı boya</div><div class="item" data-t="sushi"><div class="em">🍣</div>Suşi tabağı</div><div class="item" data-t="tuzla"><div class="em">⛵</div>Tuzla sahili</div></div>
+        <div class="item" data-t="blank"><div class="em">⬜️</div>Boş kâğıt</div><div class="item" data-t="lina"><div class="em">👧</div>Lina'yı boya</div><div class="item" data-t="sushi"><div class="em">🍣</div>Suşi tabağı</div><div class="item" data-t="tuzla"><div class="em">⛵</div>Tuzla sahili</div>
+        <div class="item" data-t="kedi"><div class="em">🐱</div>Kedi Pamuk</div><div class="item" data-t="kurabiye"><div class="em">🍪</div>Kurabiye tabağı</div></div>
         <div class="actions"><button class="btn ghost" id="gal">Galeri (${G.S.gallery.length})</button></div>`);
       p.querySelectorAll('.item').forEach(el => el.onclick = () => { template = el.dataset.t; drawTemplate(); G.closePanels(); buildBar(); Audio.sfx('pop'); });
       p.querySelector('#gal').onclick = gallery;

@@ -13,6 +13,10 @@ const Store = (() => {
     { id: 'p_tatli', name: 'Tatlı paketi', cost: 4, em: '🧁', items: ['🧁', '🍪', '🍫', '🍬', '🍰', '🍯'] },
     { id: 'p_hayvan', name: 'Hayvan paketi', cost: 4, em: '🦊', items: ['🦊', '🐼', '🦋', '🐢', '🦉', '🐶'] }
   ];
+  const EXTRA = [
+    { id: 'x_degnek', name: 'Sihirli Toplama Değneği', cost: 8, em: '🪄', sub: 'Oda Toplama’da +15 saniye' },
+    { id: 'x_30sn', name: 'Anne Gelmeden 30 Saniye', cost: 6, em: '⏱️', sub: 'Oda Toplama’da +30 saniye' }
+  ];
   const has = id => (G.S.unlocked.songs.includes(id) || G.S.unlocked.stamps.includes(id) || G.S.owned.includes(id));
   const extraSongs = () => SONGS.filter(s => G.S.unlocked.songs.includes(s.id));
   const extraStamps = () => PACKS.filter(p => G.S.unlocked.stamps.includes(p.id)).flatMap(p => p.items);
@@ -22,6 +26,7 @@ const Store = (() => {
     for (const [id, a] of Object.entries(Art.ACC)) if (a.cost > 0) out.push({ id, cat: 'Saç', name: a.name, cost: a.cost, kind: 'acc', em: a.em, sub: 'Saç aksesuarı' });
     for (const s of SONGS) out.push({ id: s.id, cat: 'Şarkı', name: s.name, cost: s.cost, kind: 'song', em: s.em, sub: 'Piyano parçası' });
     for (const p of PACKS) out.push({ id: p.id, cat: 'Damga', name: p.name, cost: p.cost, kind: 'stamp', em: p.em, sub: p.items.slice(0, 4).join(' ') });
+    for (const e of EXTRA) out.push({ id: e.id, cat: 'Ekstra', name: e.name, cost: e.cost, kind: 'extra', em: e.em, sub: e.sub });
     return out;
   }
   function unlock(it) {
@@ -35,6 +40,7 @@ const Store = (() => {
     else if (it.kind === 'acc') { G.S.hair = it.id; G.save(); G.toast(`${it.name} taktın`); }
     else if (it.kind === 'song') G.go('piano');
     else if (it.kind === 'stamp') G.go('paint');
+    else if (it.kind === 'extra') G.go('room');
   }
   function iconEl(it) {
     if (it.kind === 'outfit') {
@@ -50,7 +56,7 @@ const Store = (() => {
 })();
 
 G.scenes.store = (() => {
-  const TABS = ['Öne çıkanlar', 'Kıyafet', 'Saç', 'Şarkı', 'Damga'];
+  const TABS = ['Öne çıkanlar', 'Kıyafet', 'Saç', 'Şarkı', 'Damga', 'Ekstra'];
   let state, tab, tiles, logoT, box, featured;
   function build() {
     G.closePanels();

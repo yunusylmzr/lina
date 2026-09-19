@@ -9,6 +9,8 @@ const G = (() => {
     owned: ['none', 'orange'],
     gallery: [],         // küçük resim dataURL listesi
     people: [],          // oyuncunun eklediği karakterler (en fazla 3)
+    secrets: [],         // gizli günlük sayfaları
+    pinSeen: 0,
     unlocked: { songs: [], stamps: [] },
     diary: [],
     days: 0,
@@ -143,7 +145,7 @@ const G = (() => {
       <button class="btn ghost" data-a="home">Haritaya dön</button>
       <button class="btn" data-a="again">Tekrar oyna</button>
     </div>`);
-    p.querySelector('[data-a=home]').onclick = () => go('hub');
+    p.querySelector('[data-a=home]').onclick = () => { go('hub'); Notify.maybeAfterGame(); };
     p.querySelector('[data-a=again]').onclick = () => go(game);
     return p;
   }

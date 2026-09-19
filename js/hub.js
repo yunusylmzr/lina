@@ -2,16 +2,17 @@
 G.scenes.hub = (() => {
   const guest = i => G.guests()[i];
   const STOPS = [
-    { id: 'school', name: 'Okul Yolu', px: .12, py: .06, host: () => 'hacer', say: 'Günaydın Lina! Zil çalmadan okula yetiş, yolda çantandan düşenleri topla.', tip: 'Zıplamak için ekrana dokun, kaymak için aşağı kaydır.' },
-    { id: 'piano', name: 'Piyano', px: .29, py: .78, host: () => 'serkan', say: 'Piyano vakti! Notalar çizgiye geldiğinde tuşa dokun, ben de dans ederim.', tip: 'Tam zamanında dokun, kombo yap.' },
-    { id: 'paint', name: 'Karalama Atölyesi', px: .46, py: .10, host: () => 'hacer', say: 'Atölye açık! Fırçalar, simler ve damgalar seni bekliyor. Ne istersen çiz.', tip: 'Bitirince kaydet, galerinde saklanır.' },
-    { id: 'mall', name: 'AVM Turu', px: .63, py: .82, host: () => guest(0) || 'hacer', say: 'Hadi AVM turuna! Listedeki her şeyi vitrinlerde bulalım.', tip: 'Listedeki eşyaları vitrinlerde bul, yanlış dokunuş süre götürür.' },
-    { id: 'sushi', name: 'Suşi Şefi', px: .79, py: .12, host: () => 'serkan', say: 'Bugün şef sensin! Herkesin siparişini hazırla, benimki bol somonlu olsun.', tip: 'Malzemeleri sırayla sürükle, sonra sar ve dilimle.' },
-    { id: 'family', name: 'Aile Akşamı', px: .92, py: .84, host: () => 'serkan', say: 'Gün bitti, oyun zamanı! Rakibini seç, ekranı paylaşalım.', tip: 'İki kişilik: ekranın iki yarısı.' }
+    { id: 'school', name: 'Okul Yolu', px: .08, py: .04, host: () => 'hacer', say: 'Günaydın Lina! Zil çalmadan okula yetiş, yolda çantandan düşenleri topla.', tip: 'Zıplamak için ekrana dokun, kaymak için aşağı kaydır.' },
+    { id: 'piano', name: 'Piyano', px: .21, py: .86, host: () => 'serkan', say: 'Piyano vakti! Notalar çizgiye geldiğinde tuşa dokun, ben de dans ederim.', tip: 'Tam zamanında dokun, kombo yap.' },
+    { id: 'paint', name: 'Karalama Atölyesi', px: .34, py: .04, host: () => 'hacer', say: 'Atölye açık! Fırçalar, simler ve damgalar seni bekliyor. Ne istersen çiz.', tip: 'Bitirince kaydet, galerinde saklanır.' },
+    { id: 'room', name: 'Oda Toplama', px: .47, py: .86, host: () => 'hacer', say: 'Oda yine savaş alanı. Eşyaları doğru yere koy, ben çayı demleyip geliyorum.', tip: 'Eşyayı tut, doğru kutuya sürükle. Yatağın altı da sayılır.' },
+    { id: 'mall', name: 'AVM Turu', px: .60, py: .04, host: () => guest(0) || 'hacer', say: 'Hadi AVM turuna! Listedeki her şeyi vitrinlerde bulalım.', tip: 'Listedeki eşyaları vitrinlerde bul, yanlış dokunuş süre götürür.' },
+    { id: 'sushi', name: 'Suşi Şefi', px: .73, py: .86, host: () => 'serkan', say: 'Bugün şef sensin! Herkesin siparişini hazırla, benimki bol somonlu olsun.', tip: 'Malzemeleri sırayla sürükle, sonra sar ve dilimle.' },
+    { id: 'family', name: 'Aile Akşamı', px: .89, py: .06, host: () => 'serkan', say: 'Gün bitti, oyun zamanı! Rakibini seç, ekranı paylaşalım.', tip: 'İki kişilik: ekranın iki yarısı.' }
   ];
   const DOCK = 74;
   let hair, cur = 0, walkTo = null, lx = 0, walkT = 0, ly = 0, seagulls = [];
-  const dayT = () => { const n = STOPS.filter(s => G.S.done[s.id]).length; return G.clamp(n / 6, 0, 1) * .92; };
+  const dayT = () => { const n = STOPS.filter(s => G.S.done[s.id]).length; return G.clamp(n / STOPS.length, 0, 1) * .92; };
   const stopXY = s => { const top = G.H * .56 + 60, bot = G.H - DOCK - 34; return { x: s.px * G.W, y: top + s.py * Math.max(40, bot - top) }; };
   function nextIdx() { const i = STOPS.findIndex(s => !G.S.done[s.id]); return i < 0 ? STOPS.length - 1 : i; }
   function intro(s) {
@@ -26,16 +27,12 @@ G.scenes.hub = (() => {
   }
   function dayEnd() {
     const names = G.cast().map(k => G.PEOPLE[k].name);
-    const p = G.panel(`<h2>Gün tamamlandı!</h2><div class="diary">Lina okula yetişti, piyanoda <b>${G.S.best.piano || 0}</b> puan yaptı, atölyede <b>${G.S.gallery.length}</b> resim biriktirdi, AVM'yi gezdi, herkese suşi yaptı ve akşam <b>${names.join(', ')}</b> ile oyun oynadı.<br><br>Toplam yıldız: <b>★ ${G.S.totalStars}</b></div>
+    const p = G.panel(`<h2>Gün tamamlandı!</h2><div class="diary">Lina okula yetişti, piyanoda <b>${G.S.best.piano || 0}</b> puan yaptı, atölyede <b>${G.S.gallery.length}</b> resim biriktirdi, odasını topladı, AVM'yi gezdi, herkese suşi yaptı ve akşam <b>${names.join(', ')}</b> ile oyun oynadı.<br><br>Toplam yıldız: <b>★ ${G.S.totalStars}</b></div>
       <div class="actions"><button class="btn ghost" data-a="s">Serkan Dijital</button><button class="btn coral" data-a="n">Yeni güne başla</button></div>`);
     p.querySelector('[data-a=s]').onclick = () => G.go('store');
     p.querySelector('[data-a=n]').onclick = () => { G.S.days++; G.S.diary.unshift(`Gün ${G.S.days}: ★${G.S.totalStars}`); G.S.done = {}; G.save(); Audio.sfx('fanfare'); G.go('hub'); };
   }
-  function diary() {
-    Audio.sfx('tap'); const n = STOPS.filter(s => G.S.done[s.id]).length;
-    const p = G.panel(`<h2>Günlük</h2><div class="diary">Gün <b>${G.S.days + 1}</b> · ${n}/6 durak · bugün ★ ${Object.values(G.S.done).reduce((a, b) => a + b, 0)}<br>${STOPS.map(s => `${G.S.done[s.id] ? '✅' : '⬜️'} ${s.name}${G.S.best[s.id] ? ` <span style="color:#6b7a90">(en iyi ${G.S.best[s.id]})</span>` : ''}`).join('<br>')}${G.S.diary.length ? '<br><br>' + G.S.diary.slice(0, 5).join('<br>') : ''}</div><div class="actions"><button class="btn ghost" id="x">Kapat</button></div>`);
-    p.querySelector('#x').onclick = () => G.closePanels();
-  }
+  const diary = () => { Audio.sfx('tap'); Diary.open(STOPS); };
   function drawStop(c, s, x, y, active, done) {
     c.save(); c.translate(x, y);
     const sc = Math.min(1, G.W / 1100) * (active ? 1 + Math.sin(G.T * 3) * .03 : 1); c.scale(sc, sc);
@@ -54,6 +51,10 @@ G.scenes.hub = (() => {
       case 'sushi': c.fillStyle = '#2b2118'; c.beginPath(); c.roundRect(-70, -85, 140, 85, 8); c.fill(); c.fillStyle = '#d9534f'; c.fillRect(-78, -95, 156, 14); c.fillStyle = '#fbe3c0'; c.fillRect(-58, -70, 116, 40);
         for (const dx of [-60, 60]) { c.fillStyle = '#e63946'; c.beginPath(); c.roundRect(dx - 12, -125, 24, 30, 8); c.fill(); c.fillStyle = Y; c.fillRect(dx - 6, -133, 12, 8); }
         c.fillStyle = '#000'; c.font = '30px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🍣', 0, -50); break;
+      case 'room': c.fillStyle = '#ffd9bd'; c.beginPath(); c.roundRect(-72, -96, 144, 96, 10); c.fill();
+        c.fillStyle = '#a77cf0'; c.fillRect(6, -56, 62, 22); c.fillStyle = '#8b5a2b'; c.fillRect(6, -34, 62, 14); c.fillStyle = '#fff'; c.beginPath(); c.roundRect(10, -66, 26, 14, 5); c.fill();
+        c.fillStyle = '#5cd6a9'; c.beginPath(); c.roundRect(-62, -44, 44, 40, 8); c.fill(); c.fillStyle = '#000'; c.font = '20px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🧸', -40, -24);
+        c.fillStyle = '#2e8bc0'; c.fillRect(-64, -92, 52, 8); c.fillRect(-64, -76, 52, 8); c.fillStyle = '#ff5c8a'; c.beginPath(); c.roundRect(-8, -92, 30, 26, 6); c.fill(); c.fillStyle = '#000'; c.fillText('🧺', 7, -78); break;
       case 'family': c.fillStyle = '#fff3e0'; c.fillRect(-64, -80, 128, 80); c.fillStyle = O; c.beginPath(); c.moveTo(-76, -80); c.lineTo(0, -130); c.lineTo(76, -80); c.fill(); c.fillStyle = Y; c.fillRect(-40, -60, 26, 26); c.fillRect(14, -60, 26, 26); c.fillStyle = '#8b5a2b'; c.fillRect(-12, -36, 24, 36); c.fillStyle = '#c94a6a'; c.fillRect(30, -120, 14, 26); break;
     }
     c.fillStyle = done ? '#5cd6a9' : active ? '#ff7a1a' : 'rgba(255,255,255,.92)'; c.beginPath(); c.roundRect(-72, 16, 144, 34, 17); c.fill();
@@ -72,6 +73,7 @@ G.scenes.hub = (() => {
       dock.querySelector('[data-a=ward]').onclick = () => { Audio.sfx('tap'); G.go('wardrobe'); };
       dock.querySelector('[data-a=set]').onclick = () => { Audio.unlock(); Audio.sfx('tap'); Settings.open(); };
       document.getElementById('ui').appendChild(dock);
+      Notify.start();
       if (STOPS.every(s => G.S.done[s.id])) setTimeout(dayEnd, 600);
       else if (!G.S.seen.hub) {
         G.S.seen.hub = 1; G.save();
@@ -107,10 +109,10 @@ G.scenes.hub = (() => {
       c.save(); if (dir < 0) { c.translate(lx, 0); c.scale(-1, 1); c.translate(-lx, 0); }
       Art.lina(c, lx, ly + 8, .62, { hair, dt: 1 / 60, wind: walking ? -dir * 80 : 15, vx: walking ? 200 : 0, walk: walking ? walkT : undefined, face: 'happy', blink: Math.sin(T * 2.7) > .96 });
       c.restore();
-      const hours = ['08:00', '10:00', '13:00', '15:30', '18:00', '20:00', '21:30'][STOPS.filter(s => G.S.done[s.id]).length];
+      const hours = ['08:00', '10:00', '11:30', '13:30', '15:30', '18:00', '20:00', '21:30'][STOPS.filter(s => G.S.done[s.id]).length];
       G.txtShadow(c, hours, W / 2, Math.max(64, H * .06), 30, '#fff', 'rgba(0,0,0,.3)');
       G.txt(c, 'Tuzla sahili', W / 2, Math.max(64, H * .06) + 28, 15, 'rgba(255,255,255,.75)');
     },
-    exit() { G.closePanels(); document.getElementById('dock')?.remove(); }
+    exit() { G.closePanels(); Notify.stop(); document.getElementById('dock')?.remove(); }
   };
 })();

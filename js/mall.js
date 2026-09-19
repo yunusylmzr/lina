@@ -6,10 +6,12 @@ G.scenes.mall = (() => {
     { name: 'Emaar Square', where: 'Üsküdar', floors: 3, color: '#ff5c8a' },
     { name: 'Akasya', where: 'Acıbadem', floors: 3, color: '#5cd6a9' },
     { name: 'Buyaka', where: 'Ümraniye', floors: 3, color: '#ffd166' },
-    { name: 'Piazza', where: 'Maltepe', floors: 3, color: '#ff9f80' }
+    { name: 'Piazza', where: 'Maltepe', floors: 3, color: '#ff9f80' },
+    { name: 'Watergarden', where: 'Ataşehir', floors: 3, color: '#4ec5c1' },
+    { name: 'Optimum', where: 'Maltepe', floors: 3, color: '#c98cf0' }
   ];
-  const POOL = ['🍦', '📚', '🎀', '👟', '🧸', '🍿', '🎧', '🕶️', '🧢', '🍩', '🎈', '🧩', '🍕', '🎮', '💄', '🧣', '⌚', '🥨', '🎁', '🍭', '🧃', '🪀', '🎨', '🍣'];
-  const SHOPS = ['Kitap', 'Oyuncak', 'Dondurma', 'Spor', 'Moda', 'Kafe', 'Sinema', 'Şeker', 'Müzik', 'Hobi', 'Fırın', 'Suşi'];
+  const POOL = ['🍦', '📚', '🎀', '👟', '🧸', '🍿', '🎧', '🕶️', '🧢', '🍩', '🎈', '🧩', '🍕', '🎮', '💄', '🧣', '⌚', '🥨', '🎁', '🍭', '🧃', '🪀', '🎨', '🍣', '🧁', '🪁', '🛼', '🎤', '🧸', '🐙', '🌈', '🦄'];
+  const SHOPS = ['Kitap', 'Oyuncak', 'Dondurma', 'Spor', 'Moda', 'Kafe', 'Sinema', 'Şeker', 'Müzik', 'Hobi', 'Fırın', 'Suşi', 'Pastane', 'Kırtasiye', 'Patenci', 'Kedi Dükkânı'];
   let mall, level, windows, list, found, t, timeLimit, state, hair, lina, doruk, hint, esc, total, wrongT, buddy;
   const layout = () => { const top = Math.max(70, G.H * .12), bottom = G.H - 40; const fh = (bottom - top) / mall.floors; return { top, bottom, fh }; };
   function build() {

@@ -8,8 +8,8 @@ G.scenes.school = (() => {
   function reset() { hair = Art.makeHair(7); t = 0; speed = 330; dist = 0; lina = { y: 0, vy: 0, jumps: 0, slide: 0, hurt: 0 }; obs = []; items = []; score = 0; bag = 0; hits = 0; state = 'intro'; walkT = 0; camShake = 0; msgs = []; spawnT = 1.2; }
   function spawn() {
     const x = G.W + 120; const r = Math.random();
-    if (r < .5) { const kind = G.pick(['puddle', 'scooter', 'bench', 'gull', 'sign']); obs.push({ kind, x, w: kind === 'bench' ? 110 : kind === 'puddle' ? 120 : 70, low: kind === 'gull' || kind === 'sign', bob: Math.random() * 6 }); }
-    else { const n = 3 + Math.floor(Math.random() * 3); const arc = Math.random() < .4; for (let i = 0; i < n; i++) items.push({ x: x + i * 62, y: arc ? -120 - Math.sin(i / (n - 1) * Math.PI) * 90 : -70 - (Math.random() < .3 ? 110 : 0), em: G.pick(ITEMS), got: 0, ph: Math.random() * 6.28 }); }
+    if (r < .5) { const kind = G.pick(['puddle', 'scooter', 'bench', 'gull', 'sign', 'cat', 'cone']); obs.push({ kind, x, w: kind === 'bench' ? 110 : kind === 'puddle' ? 120 : kind === 'cone' ? 46 : 70, low: kind === 'gull' || kind === 'sign', bob: Math.random() * 6 }); }
+    else { const n = 3 + Math.floor(Math.random() * 3); const arc = Math.random() < .4; for (let i = 0; i < n; i++) { const gold = Math.random() < .08; items.push({ x: x + i * 62, y: arc ? -120 - Math.sin(i / (n - 1) * Math.PI) * 90 : -70 - (Math.random() < .3 ? 110 : 0), em: gold ? '⭐️' : G.pick(ITEMS), gold, got: 0, ph: Math.random() * 6.28 }); } }
   }
   function jump() { if (state !== 'run') return; if (lina.jumps < 2 && lina.slide <= 0) { lina.vy = lina.jumps === 0 ? -820 : -680; lina.jumps++; lina.y -= 1; Audio.sfx('jump'); } }
   function slide() { if (state !== 'run') return; if (lina.y >= -1) { lina.slide = .75; Audio.sfx('whoosh'); } else { lina.vy = Math.max(lina.vy, 900); } }
@@ -41,7 +41,7 @@ G.scenes.school = (() => {
       for (const o of obs) { if (o.hit) continue; const ox = o.x - o.w / 2, ox2 = o.x + o.w / 2; if (px + 25 > ox && px - 25 < ox2) {
         let hit = false; if (o.low) { const oy = groundY() - 105; hit = ly - lh < oy + 25 && lina.slide <= 0 && !(ly - lh < oy - 40 && false); if (lina.y < -150) hit = false; } else { hit = lina.y > -(o.kind === 'puddle' ? 30 : 55); }
         if (hit) { o.hit = 1; hits++; lina.hurt = .8; camShake = .35; bag = Math.max(0, bag - 1); Audio.sfx('hit'); msgs.push({ x: px, y: ly - 180, s: o.kind === 'puddle' ? 'Şlap!' : 'Tak!', t: 1 }); G.burst(px, ly - 60, o.kind === 'puddle' ? '#7cc4f5' : '#ff9f80', 10); } } }
-      for (const it of items) { if (it.got) { it.got += dt; it.y -= 120 * dt; continue; } const iy = groundY() + it.y; if (Math.abs(it.x - px) < 46 && Math.abs(iy - (ly - lh / 2)) < lh / 2 + 24) { it.got = .01; bag++; score += 10; Audio.sfx('coin'); G.burst(it.x, iy, '#ffd166', 6, 160); } }
+      for (const it of items) { if (it.got) { it.got += dt; it.y -= 120 * dt; continue; } const iy = groundY() + it.y; if (Math.abs(it.x - px) < 46 && Math.abs(iy - (ly - lh / 2)) < lh / 2 + 24) { it.got = .01; bag += it.gold ? 3 : 1; score += it.gold ? 30 : 10; Audio.sfx(it.gold ? 'star' : 'coin'); if (it.gold) msgs.push({ x: it.x, y: iy - 40, s: '+3!', t: .9 }); G.burst(it.x, iy, '#ffd166', 6, 160); } }
       for (const m of msgs) m.t -= dt; msgs = msgs.filter(m => m.t > 0);
       if (state === 'done') { endX -= speed * dt; if (endX < G.W * .62) { speed *= .9; if (speed < 20) speed = 0; } }
     },
@@ -66,6 +66,8 @@ G.scenes.school = (() => {
         else if (o.kind === 'scooter') { c.fillStyle = '#1b1b2f'; c.beginPath(); c.arc(-24, -10, 11, 0, 7); c.arc(24, -10, 11, 0, 7); c.fill(); c.fillStyle = '#ff5c8a'; c.fillRect(-26, -22, 52, 8); c.fillRect(20, -70, 6, 50); c.fillRect(6, -70, 34, 6); }
         else if (o.kind === 'bench') { c.fillStyle = '#8b5a2b'; c.fillRect(-52, -40, 104, 10); c.fillRect(-52, -58, 104, 8); c.fillStyle = '#4a4a5a'; c.fillRect(-46, -30, 8, 30); c.fillRect(38, -30, 8, 30); }
         else if (o.kind === 'gull') { c.fillStyle = '#fff'; c.beginPath(); c.ellipse(0, -110 + Math.sin(T * 6 + o.bob) * 5, 24, 12, 0, 0, 7); c.fill(); c.fillStyle = '#ffb347'; c.beginPath(); c.moveTo(22, -112); c.lineTo(36, -108); c.lineTo(22, -104); c.fill(); Art.seagull(c, -4, -122 + Math.sin(T * 6 + o.bob) * 5, T + o.bob, 1.6); }
+        else if (o.kind === 'cat') { const bob = Math.sin(T * 3 + o.bob) * 2; c.fillStyle = '#f0f0f0'; c.beginPath(); c.ellipse(0, -18 + bob, 30, 16, 0, 0, 7); c.fill(); c.beginPath(); c.arc(-22, -30 + bob, 14, 0, 7); c.fill(); c.fillStyle = '#f0f0f0'; c.beginPath(); c.moveTo(-32, -40 + bob); c.lineTo(-28, -52 + bob); c.lineTo(-22, -41 + bob); c.fill(); c.beginPath(); c.moveTo(-18, -41 + bob); c.lineTo(-13, -52 + bob); c.lineTo(-10, -40 + bob); c.fill(); c.strokeStyle = '#f0f0f0'; c.lineWidth = 6; c.lineCap = 'round'; c.beginPath(); c.moveTo(26, -22 + bob); c.quadraticCurveTo(44, -30 + bob, 38, -48 + bob); c.stroke(); c.fillStyle = '#2b2118'; c.beginPath(); c.arc(-27, -31 + bob, 2.4, 0, 7); c.arc(-17, -31 + bob, 2.4, 0, 7); c.fill(); }
+        else if (o.kind === 'cone') { c.fillStyle = '#ff7a1a'; c.beginPath(); c.moveTo(0, -54); c.lineTo(17, 0); c.lineTo(-17, 0); c.closePath(); c.fill(); c.fillStyle = '#fff'; c.fillRect(-12, -26, 24, 8); c.fillStyle = '#d95a00'; c.fillRect(-22, -4, 44, 6); }
         else if (o.kind === 'sign') { c.fillStyle = '#4a4a5a'; c.fillRect(-4, -150, 8, 60); c.fillStyle = '#2e8bc0'; c.beginPath(); c.roundRect(-46, -170, 92, 40, 8); c.fill(); G.txt(c, 'Tuzla Sahil', 0, -150, 15, '#fff'); c.fillStyle = '#4a4a5a'; c.fillRect(-4, -190, 8, 20); }
         c.restore(); }
       // okul (bitişte)

@@ -8,6 +8,7 @@ G.scenes.piano = (() => {
     { name: 'Daha Dün Annemizin', bpm: 100, em: '⭐', seq: 'C4 C4 G4 G4 A4 A4 G4- F4 F4 E4 E4 D4 D4 C4- G4 G4 F4 F4 E4 E4 D4- G4 G4 F4 F4 E4 E4 D4- C4 C4 G4 G4 A4 A4 G4- F4 F4 E4 E4 D4 D4 C4-' },
     { name: 'Mutlu Yıllar', bpm: 110, em: '🎂', seq: 'G4. G4. A4- G4- C5- B4-- G4. G4. A4- G4- D5- C5-- G4. G4. G5- E5- C5- B4- A4-- F5. F5. E5- C5- D5- C5--' },
     { name: 'Neşeye Övgü', bpm: 120, em: '🎻', seq: 'E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 E4. D4. D4- E4 E4 F4 G4 G4 F4 E4 D4 C4 C4 D4 E4 D4. C4. C4-' },
+    { name: 'Mini Mini Bir Kuş', bpm: 104, em: '🐦', seq: 'G4 E4 E4- F4 D4 D4- C4 D4 E4 F4 G4 G4 G4- G4 E4 E4- F4 D4 D4- C4 E4 G4 G4 C4--' },
     { name: 'Çan Çalıyor', bpm: 130, em: '🔔', seq: 'E4 E4 E4- E4 E4 E4- E4 G4 C4. D4. E4-- F4 F4 F4. F4. F4 E4 E4 E4. E4. E4 D4 D4 E4 D4- G4-' }
   ];
   // seq: nota + süre işareti: (yok)=1 vuruş, '-'=2, '--'=3/4, '.'=0.5

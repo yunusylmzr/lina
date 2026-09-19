@@ -6,7 +6,9 @@ G.scenes.sushi = (() => {
     { n: 'Kaliforniya', seq: ['yosun', 'pirinc', 'avokado', 'salatalik', 'susam'], say: 'Avokadolu olsun, susamı da unutma.' },
     { n: 'Filadelfiya', seq: ['yosun', 'pirinc', 'somon', 'peynir'], say: 'Krem peynirli, benim favorim.' },
     { n: 'Karides Rulo', seq: ['yosun', 'pirinc', 'karides', 'avokado'], say: 'Karidesli lütfen, çok açım!' },
-    { n: 'Gökkuşağı', seq: ['yosun', 'pirinc', 'somon', 'avokado', 'salatalik', 'karides'], say: 'Renkli olanı yap, içinde her şey olsun.' }
+    { n: 'Gökkuşağı', seq: ['yosun', 'pirinc', 'somon', 'avokado', 'salatalik', 'karides'], say: 'Renkli olanı yap, içinde her şey olsun.' },
+    { n: 'Ejder Rulo', seq: ['yosun', 'pirinc', 'karides', 'avokado', 'susam'], say: 'Ejder olsun! Adı bile heyecanlı.' },
+    { n: 'Bahçe Rulo', seq: ['yosun', 'pirinc', 'salatalik', 'avokado', 'peynir'], say: 'Balıksız olsun, bugün sebze günüm.' }
   ];
   let orders, cur, placed, drag, state, t, score, served, hair, roll, slices, tick, fails, msg;
   const trayY = () => G.H - 90;
