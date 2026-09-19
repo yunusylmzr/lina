@@ -8,9 +8,12 @@ const G = (() => {
     hair: 'none', outfit: 'orange',
     owned: ['none', 'orange'],
     gallery: [],         // küçük resim dataURL listesi
+    people: [],          // oyuncunun eklediği karakterler (en fazla 3)
+    unlocked: { songs: [], stamps: [] },
     diary: [],
     days: 0,
     muted: false,
+    storeSeen: 0,
     seen: {}             // tanıtım paneli görüldü mü
   });
   let S = defaults();
@@ -152,17 +155,23 @@ const G = (() => {
     txt(c, s, x, y + off, size, shadow, align); txt(c, s, x, y, size, color, align);
   }
 
-  // Aile
-  const PEOPLE = {
+  // Çekirdek aile
+  const BASE = {
     lina: { name: 'Lina', hair: '#ff7a1a', skin: '#ffd9b8', top: '#ff5c8a', eyes: '#3b6b3a', kind: 'girl' },
-    serkan: { name: 'Serkan', hair: '#2b2118', skin: '#f2c9a6', top: '#2e8bc0', eyes: '#3a2a20', kind: 'dad', beard: true },
-    hacer: { name: 'Hacer', hair: '#3a2419', skin: '#ffd9b8', top: '#8e5cd6', eyes: '#3a2a20', kind: 'mom' },
-    yunus: { name: 'Yunus', hair: '#1e1a1a', skin: '#e9bf9b', top: '#5cd6a9', eyes: '#2a2a2a', kind: 'dad', glasses: true },
-    betul: { name: 'Betül', hair: '#5a3a26', skin: '#ffe0c4', top: '#ffd166', eyes: '#3a2a20', kind: 'mom' },
-    doruk: { name: 'Mehmet Doruk', hair: '#4a3222', skin: '#ffd9b8', top: '#ff9f80', eyes: '#3a2a20', kind: 'boy' }
+    serkan: { name: 'Serkan', hair: '#2b2118', skin: '#f2c9a6', top: '#2e8bc0', eyes: '#3a2a20', kind: 'dad' },
+    hacer: { name: 'Hacer', hair: '#3a2419', skin: '#ffd9b8', top: '#8e5cd6', eyes: '#3a2a20', kind: 'mom' }
   };
+  let _people = null;
+  const invalidate = () => { _people = null; };
+  function people() {
+    if (!_people) { _people = Object.assign({}, BASE); for (const c of S.people || []) _people[c.id] = c; }
+    return _people;
+  }
+  // Lina dışındaki herkes (misafirler dahil)
+  const cast = () => ['serkan', 'hacer'].concat((S.people || []).map(c => c.id));
+  const guests = () => (S.people || []).map(c => c.id);
 
-  return { S, save, load, cv, ctx, get W() { return W; }, get H() { return H; }, get T() { return T; }, get scene() { return sceneName; },
-    scenes, go, panel, closePanels, toast, addStars, burst, star, finish, clamp, lerp, rnd, pick, ease, rrect, txt, txtShadow, PEOPLE, resize, updateStars, pointers,
+  return { S, save, load, invalidate, cv, ctx, get W() { return W; }, get H() { return H; }, get T() { return T; }, get scene() { return sceneName; },
+    scenes, go, panel, closePanels, toast, addStars, burst, star, finish, clamp, lerp, rnd, pick, ease, rrect, txt, txtShadow, get PEOPLE() { return people(); }, cast, guests, resize, updateStars, pointers,
     start() { resize(); requestAnimationFrame(loop); } };
 })();

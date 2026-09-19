@@ -4,19 +4,19 @@ G.scenes.wardrobe = (() => {
   function render() {
     G.closePanels();
     const items = tab === 'hair' ? Art.ACC : Art.OUTFITS; const cur = tab === 'hair' ? G.S.hair : G.S.outfit;
-    const p = G.panel(`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>Gardırop</h2><span class="badge">★ ${G.S.stars} yıldızın var</span></div>
+    const mine = Object.entries(items).filter(([id]) => G.S.owned.includes(id));
+    const p = G.panel(`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h2>Gardırop</h2><span class="badge">★ ${G.S.stars}</span></div>
       <div class="actions" style="justify-content:flex-start;margin:4px 0 0"><button class="btn ${tab === 'hair' ? '' : 'ghost'}" data-tab="hair">Saç</button><button class="btn ${tab === 'outfit' ? 'coral' : 'ghost'}" data-tab="outfit">Kıyafet</button></div>
-      <div class="grid">${Object.entries(items).map(([id, it]) => { const own = G.S.owned.includes(id); return `<div class="item ${cur === id ? 'sel' : ''} ${own ? '' : 'lock'}" data-id="${id}">${tab === 'hair' ? `<div class="em">${it.em}</div>` : `<div class="em" style="width:44px;height:44px;border-radius:50%;background:${it.color};display:flex;align-items:center;justify-content:center;font-size:22px">${it.print || ''}</div>`}${it.name}<div class="cost">${own ? (cur === id ? 'giyiyor' : 'sende') : `★ ${it.cost}`}</div></div>`; }).join('')}</div>
-      <div class="actions"><button class="btn ghost" data-a="back">Haritaya dön</button></div>`, 'bottom');
+      <div class="grid">${mine.map(([id, it]) => `<div class="item ${cur === id ? 'sel' : ''}" data-id="${id}">${tab === 'hair' ? `<div class="em">${it.em}</div>` : `<div class="em" style="width:44px;height:44px;border-radius:50%;background:${it.color};display:flex;align-items:center;justify-content:center;font-size:22px">${it.print || ''}</div>`}${it.name}<div class="cost">${cur === id ? 'giyiyor' : 'dolabında'}</div></div>`).join('')}</div>
+      <p style="font-size:14px;color:var(--muted)">Yenileri Serkan Dijital'de, yıldızlarınla açılır.</p>
+      <div class="actions"><button class="btn ghost" data-a="back">Haritaya dön</button><button class="btn" data-a="store">Serkan Dijital</button></div>`, 'bottom');
     p.style.width = 'min(560px,calc(100vw - 32px))'; p.style.left = 'auto'; p.style.right = '16px'; p.style.transform = 'none'; p.style.maxHeight = 'calc(100vh - 100px)';
     p.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; Audio.sfx('tap'); render(); });
     p.querySelectorAll('.item').forEach(el => el.onclick = () => {
-      const id = el.dataset.id, it = items[id];
-      if (!G.S.owned.includes(id)) { if (G.S.stars >= it.cost) { G.S.stars -= it.cost; G.S.owned.push(id); Audio.sfx('fanfare'); G.toast(`${it.name} artık senin!`); G.burst(G.W * .3, G.H * .4, '#ffd166', 30, 400); } else { Audio.sfx('wrong'); G.toast(`${it.cost - G.S.stars} yıldız daha lazım`); return render(); } }
-      else Audio.sfx('pop');
-      if (tab === 'hair') G.S.hair = id; else G.S.outfit = id; G.save(); G.updateStars(); render();
+      Audio.sfx('pop'); if (tab === 'hair') G.S.hair = el.dataset.id; else G.S.outfit = el.dataset.id; G.save(); render();
     });
     p.querySelector('[data-a=back]').onclick = () => G.go('hub');
+    p.querySelector('[data-a=store]').onclick = () => G.go('store');
   }
   return {
     landscape: true, showHome: true, showStars: true,

@@ -2,16 +2,16 @@
 G.scenes.sushi = (() => {
   const ING = { yosun: { n: 'Yosun', em: '🟩', c: '#1f5a3a' }, pirinc: { n: 'Pirinç', em: '🍚', c: '#fff' }, somon: { n: 'Somon', em: '🐟', c: '#ff9f80' }, avokado: { n: 'Avokado', em: '🥑', c: '#7fc86a' }, salatalik: { n: 'Salatalık', em: '🥒', c: '#3f9e4a' }, peynir: { n: 'Krem peynir', em: '🧀', c: '#fff3c4' }, susam: { n: 'Susam', em: '⚪', c: '#f3e2b3' }, karides: { n: 'Karides', em: '🦐', c: '#ff7a6b' } };
   const ROLLS = [
-    { n: 'Somon Rulo', who: ['lina', 'yunus'], seq: ['yosun', 'pirinc', 'somon'], say: { lina: 'Benim en sevdiğim!', yunus: 'Bol somon, tam istediğim gibi.' } },
-    { n: 'Kaliforniya', who: ['hacer', 'betul'], seq: ['yosun', 'pirinc', 'avokado', 'salatalik', 'susam'], say: { hacer: 'Avokadolu olsun, teşekkürler şefim.', betul: 'Susamı unutma!' } },
-    { n: 'Filadelfiya', who: ['serkan'], seq: ['yosun', 'pirinc', 'somon', 'peynir'], say: { serkan: 'Krem peynirli, babanın favorisi.' } },
-    { n: 'Karides Rulo', who: ['doruk'], seq: ['yosun', 'pirinc', 'karides', 'avokado'], say: { doruk: 'Karidesli lütfen, çok açım!' } },
-    { n: 'Gökkuşağı', who: ['lina', 'hacer'], seq: ['yosun', 'pirinc', 'somon', 'avokado', 'salatalik', 'karides'], say: { lina: 'Renkli olan!', hacer: 'Herkesin sevdiği bir şey var içinde.' } }
+    { n: 'Somon Rulo', seq: ['yosun', 'pirinc', 'somon'], say: 'Bol somonlu olsun, en sevdiğim!' },
+    { n: 'Kaliforniya', seq: ['yosun', 'pirinc', 'avokado', 'salatalik', 'susam'], say: 'Avokadolu olsun, susamı da unutma.' },
+    { n: 'Filadelfiya', seq: ['yosun', 'pirinc', 'somon', 'peynir'], say: 'Krem peynirli, benim favorim.' },
+    { n: 'Karides Rulo', seq: ['yosun', 'pirinc', 'karides', 'avokado'], say: 'Karidesli lütfen, çok açım!' },
+    { n: 'Gökkuşağı', seq: ['yosun', 'pirinc', 'somon', 'avokado', 'salatalik', 'karides'], say: 'Renkli olanı yap, içinde her şey olsun.' }
   ];
   let orders, cur, placed, drag, state, t, score, served, hair, roll, slices, tick, fails, msg;
   const trayY = () => G.H - 90;
   const matX = () => G.W * .5, matY = () => G.H * .55;
-  function newOrder() { const r = G.pick(ROLLS); const who = G.pick(r.who); cur = { roll: r, who, t: 0, limit: 14 + r.seq.length * 3 }; placed = []; roll = 0; slices = 0; state = 'build'; msg = { s: r.say[who], t: 3 }; Audio.sfx('bell'); }
+  function newOrder() { const r = G.pick(ROLLS); const who = G.pick(G.cast()); cur = { roll: r, who, t: 0, limit: 14 + r.seq.length * 3 }; placed = []; roll = 0; slices = 0; state = 'build'; msg = { s: r.say, t: 3 }; Audio.sfx('bell'); }
   function ingList() { return Object.keys(ING); }
   function ingAt(x, y) { const ks = ingList(); const w = Math.min(96, (G.W - 40) / ks.length); const x0 = (G.W - w * ks.length) / 2; if (y > trayY() - 50 && y < trayY() + 50) { const i = Math.floor((x - x0) / w); if (i >= 0 && i < ks.length) return ks[i]; } return null; }
   function place(k) {
@@ -24,12 +24,12 @@ G.scenes.sushi = (() => {
     G.burst(matX(), matY(), '#ffd166', 20, 320);
     setTimeout(() => { if (served >= 6) end(); else newOrder(); }, 1400);
   }
-  function end() { state = 'done'; const stars = fails === 0 ? 3 : fails <= 3 ? 2 : 1; G.finish('sushi', score, stars, `<b>${served}</b> sipariş servis edildi${fails ? `, <b>${fails}</b> yanlış malzeme` : ', hiç hata yok!'}. Yunus: “Bu şef Tuzla'nın en iyisi.”`); }
+  function end() { state = 'done'; const stars = fails === 0 ? 3 : fails <= 3 ? 2 : 1; G.finish('sushi', score, stars, `<b>${served}</b> sipariş servis edildi${fails ? `, <b>${fails}</b> yanlış malzeme` : ', hiç hata yok!'}. Serkan: “Bu şef Tuzla'nın en iyisi.”`); }
   return {
     landscape: true, showHome: true, showStars: true,
     enter() { orders = []; score = 0; served = 0; fails = 0; hair = Art.makeHair(6); state = 'intro'; t = 0; drag = null; Audio.ambience(false);
-      const p = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">Yunus</div><h2 style="font-size:28px">Suşi Şefi</h2></div></div><p class="lead">“Bugün şef sensin Lina! Her sipariş için tarife bak, malzemeleri alttaki tepsiden <b>sırayla</b> hasıra sürükle. Sonra yukarı kaydırarak sar ve dokunarak dilimle.”</p><p>6 sipariş, hata yaparsan süre gider.</p><div class="actions center"><button class="btn big" id="go">Mutfağa!</button></div>`);
-      p.querySelector('#av').replaceWith(Art.avatar('yunus')); p.querySelector('#go').onclick = () => { G.closePanels(); newOrder(); }; },
+      const p = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">Serkan</div><h2 style="font-size:28px">Suşi Şefi</h2></div></div><p class="lead">“Bugün şef sensin Lina! Her sipariş için tarife bak, malzemeleri alttaki tepsiden <b>sırayla</b> hasıra sürükle. Sonra yukarı kaydırarak sar ve dokunarak dilimle.”</p><p>6 sipariş, hata yaparsan süre gider.</p><div class="actions center"><button class="btn big" id="go">Mutfağa!</button></div>`);
+      p.querySelector('#av').replaceWith(Art.avatar('serkan')); p.querySelector('#go').onclick = () => { G.closePanels(); newOrder(); }; },
     down(p) { if (state === 'build') { const k = ingAt(p.x, p.y); if (k) { drag = { k, x: p.x, y: p.y }; Audio.sfx('tap'); } } else if (state === 'cut') { if (Math.abs(p.x - matX()) < 220 && Math.abs(p.y - matY()) < 90) { slices++; Audio.sfx('slice'); G.burst(p.x, matY(), '#fff', 6, 120); if (slices >= 6) serve(); } } },
     move(p) { if (drag) { drag.x = p.x; drag.y = p.y; } },
     up(p) { if (drag) { if (Math.abs(p.x - matX()) < 200 && Math.abs(p.y - matY()) < 110) place(drag.k); drag = null; } else if (state === 'roll' && (p.sy ?? p.y) - p.y > 60) { roll = 1; state = 'cut'; Audio.sfx('whoosh'); msg = { s: 'Dokunarak 6 dilim kes!', t: 3 }; } },

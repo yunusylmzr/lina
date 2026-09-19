@@ -13,7 +13,7 @@ G.scenes.piano = (() => {
   // seq: nota + süre işareti: (yok)=1 vuruş, '-'=2, '--'=3/4, '.'=0.5
   function parse(song) { const beat = 60 / song.bpm; let t = 1.2; return song.seq.split(/\s+/).map(tok => { const m = tok.match(/^([A-G]\d)(\.|--|-)?$/); const d = m[2] === '.' ? .5 : m[2] === '-' ? 2 : m[2] === '--' ? 3 : 1; const n = { key: KEYS.indexOf(m[1]), t, hit: 0, judged: 0 }; t += d * beat; return n; }); }
   const FALL = 1.9; // saniye: ekranın tepesinden çizgiye
-  let song, notes, t, state, score, combo, maxCombo, hits, pressed, hair, judg, serkanT;
+  let song, notes, t, state, score, combo, maxCombo, hits, pressed, hair, judg, serkanT, LIST;
   const layout = () => { const kh = Math.min(200, G.H * .3), ky = G.H - kh - 10, kw = Math.min(90, (G.W - 40) / 12); const x0 = (G.W - kw * 12) / 2; return { kh, ky, kw, x0, hitY: ky - 26 }; };
   function press(i, byUser = true) {
     pressed[i] = .25; Audio.note(FREQ[KEYS[i]], 1.2, .38); Audio.unlock();
@@ -29,10 +29,11 @@ G.scenes.piano = (() => {
     setTimeout(() => G.finish('piano', score, stars, `<b>${song.name}</b> · doğruluk %${acc} · en uzun kombo <b>${maxCombo}</b>${acc >= 85 ? ' — Serkan alkışlıyor!' : ''}`), 800);
   }
   function choose() {
-    const p = G.panel(`<h2>Hangi şarkı?</h2><p>Notalar düşerken çizgiye geldiğinde tuşa dokun. Şarkı seçmeden önce tuşları deneyebilirsin.</p><div class="grid" id="songs">${SONGS.map((s, i) => `<div class="item" data-i="${i}"><div class="em">${s.em}</div>${s.name}<div class="cost">${G.S.best['piano_' + i] ? 'en iyi ' + G.S.best['piano_' + i] : s.bpm + ' bpm'}</div></div>`).join('')}</div>`, 'bottom');
+    LIST = SONGS.concat(Store.extraSongs());
+    const p = G.panel(`<h2>Hangi şarkı?</h2><p>Notalar düşerken çizgiye geldiğinde tuşa dokun. Şarkı seçmeden önce tuşları deneyebilirsin.</p><div class="grid" id="songs">${LIST.map((s, i) => `<div class="item" data-i="${i}"><div class="em">${s.em}</div>${s.name}<div class="cost">${G.S.best['piano_' + i] ? 'en iyi ' + G.S.best['piano_' + i] : s.bpm + ' bpm'}</div></div>`).join('')}</div>`, 'bottom');
     p.querySelectorAll('.item').forEach(el => el.onclick = () => { G.closePanels(); startSong(+el.dataset.i); });
   }
-  function startSong(i) { song = SONGS[i]; song.idx = i; notes = parse(song); t = -1; state = 'play'; score = 0; combo = 0; maxCombo = 0; hits = 0; Audio.sfx('pop'); }
+  function startSong(i) { song = LIST[i]; song.idx = i; notes = parse(song); t = -1; state = 'play'; score = 0; combo = 0; maxCombo = 0; hits = 0; Audio.sfx('pop'); }
   return {
     landscape: true, showHome: true, showStars: true,
     enter() { hair = Art.makeHair(6); pressed = new Array(12).fill(0); state = 'free'; notes = []; t = 0; serkanT = 0; Audio.ambience(false); choose(); },

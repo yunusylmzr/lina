@@ -108,3 +108,52 @@ html,body{margin:0;height:100%;background:var(--night);color:var(--ink);font-fam
 
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 @media (max-width:640px){.panel{padding:18px 18px 16px;border-radius:22px}.btn{font-size:19px;padding:12px 20px}.panel h2{font-size:26px}}
+
+/* --- Serkan Dijital --- */
+.panel.store{width:min(880px,calc(100vw - 24px))}
+.store-head{display:flex;align-items:center;gap:14px}
+.store-head h2{margin:0}
+.store-head p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.store-logo{width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,#ffb570,#ff5c8a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;flex:none;box-shadow:0 6px 18px rgba(255,92,138,.35)}
+.store-logo.big{width:104px;height:104px;border-radius:29px;font-size:44px;margin:0 auto 6px}
+.badge.big{font-size:18px;margin-left:auto;flex:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:14px 0 2px;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--disp);font-weight:600;font-size:16px;border:0;background:var(--sand);color:#3a4356;border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+.tab.sel{background:var(--orange);color:#fff}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:10px;margin-top:8px}
+.app{display:flex;align-items:center;gap:12px;background:var(--sand);border-radius:18px;padding:10px 12px}
+.app .ico{width:54px;height:54px;border-radius:15px;background:#fff;flex:none;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.app .meta{flex:1;min-width:0}
+.app .name{font-family:var(--disp);font-weight:600;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .sub{font-size:13px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .bar{height:0;overflow:hidden;background:#e6dccb;border-radius:3px;margin-top:5px;transition:height .15s}
+.app .bar i{display:block;height:6px;width:0;background:var(--orange);border-radius:3px}
+.app.dl .bar{height:6px}
+.app.dl .bar i{width:100%;transition:width 1s linear}
+.app .act{font-family:var(--disp);font-weight:600;font-size:15px;color:#fff;background:var(--orange);border:0;border-radius:999px;padding:10px 15px;cursor:pointer;flex:none;min-width:66px}
+.app .act.own{background:var(--mint);color:#08351f}
+.app .act[disabled]{background:var(--muted);cursor:default}
+
+/* --- harita alt bandı --- */
+#dock{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;justify-content:center;align-items:center;padding:10px max(12px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(15,42,68,0),rgba(15,42,68,.5))}
+#dock .chip{font-size:18px;height:50px;padding:10px 18px}
+#dock .chip.hero{background:linear-gradient(135deg,#ff7a1a,#ff5c8a)}
+
+/* --- karakter yapıcı --- */
+.maker{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.maker .prev{background:var(--sand);border-radius:18px;padding:6px;flex:none}
+.maker .fields{flex:1;min-width:230px}
+.field{margin-bottom:10px}
+.field label{font-weight:800;font-size:13px;color:var(--muted);display:block;margin-bottom:5px}
+.field input[type=text]{width:100%;font-family:var(--body);font-weight:800;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #e6dccb;background:#fff;box-sizing:border-box;color:var(--ink)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip-sm{font-family:var(--disp);font-weight:600;font-size:15px;border:0;background:var(--sand);border-radius:999px;padding:8px 14px;cursor:pointer;color:#3a4356}
+.chip-sm.sel{background:var(--orange);color:#fff}
+.sws{display:flex;gap:8px;flex-wrap:wrap}
+.sw2{width:34px;height:34px;border-radius:50%;border:3px solid rgba(0,0,0,.12);cursor:pointer;padding:0}
+.sw2.sel{border-color:var(--ink);transform:scale(1.12)}
+.cast{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 2px}
+.cast .one{position:relative;background:var(--sand);border-radius:16px;padding:8px 10px 6px;text-align:center;font-weight:800;font-size:14px;color:#3a4356}
+.cast .one canvas{display:block;margin:0 auto 2px}
+.cast .one .x{position:absolute;top:-7px;right:-7px;width:26px;height:26px;border-radius:50%;background:var(--coral);color:#fff;border:0;font-size:15px;line-height:1;cursor:pointer;font-family:var(--disp)}

@@ -1,6 +1,8 @@
 /* Çizim: karakterler, Lina'nın fizikli saçı, gökyüzü ve manzara parçaları */
 const Art = (() => {
   const P = () => G.PEOPLE;
+  const spec = who => (typeof who === 'string' ? (P()[who] || P().lina) : who);
+  const idOf = who => (typeof who === 'string' ? who : (who && who.id) || '');
   const TAU = Math.PI * 2;
   const shade = (hex, k) => { // k<0 koyu, >0 açık
     const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255;
@@ -66,7 +68,7 @@ const Art = (() => {
 
   // ---- yüz
   function face(c, who, x, y, r, o = {}) {
-    const p = P()[who]; const mood = o.face || 'happy'; const dir = o.dir || 0; // -1..1 bakış
+    const p = spec(who); const id = idOf(who); const mood = o.face || 'happy'; const dir = o.dir || 0; // -1..1 bakış
     // baş
     c.fillStyle = p.skin; c.beginPath(); c.ellipse(x, y, r, r * 1.04, 0, 0, TAU); c.fill();
     // kulaklar
@@ -90,7 +92,7 @@ const Art = (() => {
     for (const sx of [-1, 1]) { const cx = x + sx * ex; c.beginPath(); c.moveTo(cx - er, ey - er * 1.55 + bu + (mood === 'sad' ? -sx * r * .04 : 0)); c.quadraticCurveTo(cx, ey - er * 1.9 + bu, cx + er, ey - er * 1.55 + bu + (mood === 'sad' ? sx * r * .04 : 0)); c.stroke(); }
     // yanaklar
     c.fillStyle = 'rgba(255,120,120,.35)'; c.beginPath(); c.ellipse(x - r * .6, y + r * .42, r * .16, r * .1, 0, 0, TAU); c.ellipse(x + r * .6, y + r * .42, r * .16, r * .1, 0, 0, TAU); c.fill();
-    if (who === 'lina') { c.fillStyle = 'rgba(200,110,60,.45)'; for (let i = 0; i < 6; i++) { c.beginPath(); c.arc(x + (i % 3 - 1) * r * .13 + (i > 2 ? r * .6 : -r * .6), y + r * .38 + (i % 2) * r * .07, r * .025, 0, TAU); c.fill(); } }
+    if (id === 'lina') { c.fillStyle = 'rgba(200,110,60,.45)'; for (let i = 0; i < 6; i++) { c.beginPath(); c.arc(x + (i % 3 - 1) * r * .13 + (i > 2 ? r * .6 : -r * .6), y + r * .38 + (i % 2) * r * .07, r * .025, 0, TAU); c.fill(); } }
     // burun
     c.strokeStyle = shade(p.skin, -.3); c.lineWidth = r * .05; c.beginPath(); c.moveTo(x, y + r * .25); c.quadraticCurveTo(x + r * .09, y + r * .38, x - r * .03, y + r * .4); c.stroke();
     // ağız
@@ -104,17 +106,16 @@ const Art = (() => {
 
   // saç (ön kısım / fizikli olmayan karakterler)
   function hairFront(c, who, x, y, r, o = {}) {
-    const p = P()[who]; c.fillStyle = p.hair;
-    if (who === 'lina') {
+    const p = spec(who); const id = idOf(who); c.fillStyle = p.hair;
+    if (id === 'lina') {
       // kâkül: yandan ayrık, dalgalı
       c.beginPath(); c.moveTo(x - r * 1.02, y + r * .15); c.quadraticCurveTo(x - r * 1.05, y - r * .9, x - r * .1, y - r * 1.06); c.quadraticCurveTo(x + r * .9, y - r * 1.1, x + r * 1.03, y - r * .05);
       c.quadraticCurveTo(x + r * .8, y - r * .2, x + r * .55, y - r * .48); c.quadraticCurveTo(x + r * .2, y - r * .25, x - r * .15, y - r * .55); c.quadraticCurveTo(x - r * .45, y - r * .2, x - r * .68, y - r * .05); c.quadraticCurveTo(x - r * .85, y + r * .15, x - r * 1.02, y + r * .15); c.fill();
       c.fillStyle = 'rgba(255,220,160,.35)'; c.beginPath(); c.moveTo(x - r * .3, y - r * .95); c.quadraticCurveTo(x + r * .1, y - r * 1.02, x + r * .5, y - r * .85); c.quadraticCurveTo(x + r * .2, y - r * .8, x - r * .25, y - r * .78); c.fill();
       accessory(c, o.hairAcc || G.S.hair, x, y, r);
-    } else if (p.kind === 'mom') {
+    } else if (p.kind === 'mom' || p.kind === 'girl') {
       // topuz / uzun saç arkası face'ten önce çizilir (hairBack), önde düz kâkül
       c.beginPath(); c.moveTo(x - r * 1.03, y + r * .2); c.quadraticCurveTo(x - r * 1.05, y - r * 1.05, x, y - r * 1.08); c.quadraticCurveTo(x + r * 1.05, y - r * 1.05, x + r * 1.03, y + r * .2); c.quadraticCurveTo(x + r * .9, y - r * .35, x + r * .3, y - r * .5); c.quadraticCurveTo(x - r * .3, y - r * .7, x - r * .8, y - r * .1); c.quadraticCurveTo(x - r * .95, y, x - r * 1.03, y + r * .2); c.fill();
-      if (who === 'betul') { c.fillStyle = '#ffd166'; c.beginPath(); c.arc(x + r * .7, y - r * .85, r * .16, 0, TAU); c.fill(); }
     } else if (p.kind === 'dad') {
       c.beginPath(); c.moveTo(x - r * 1.0, y - r * .05); c.quadraticCurveTo(x - r * 1.02, y - r * 1.02, x, y - r * 1.06); c.quadraticCurveTo(x + r * 1.02, y - r * 1.02, x + r * 1.0, y - r * .05); c.quadraticCurveTo(x + r * .85, y - r * .55, x + r * .4, y - r * .6); c.quadraticCurveTo(x, y - r * .75, x - r * .5, y - r * .6); c.quadraticCurveTo(x - r * .85, y - r * .55, x - r * 1.0, y - r * .05); c.fill();
     } else { // boy: kabarık
@@ -122,9 +123,9 @@ const Art = (() => {
     }
   }
   function hairBack(c, who, x, y, r) {
-    const p = P()[who]; c.fillStyle = shade(p.hair, -.15);
-    if (p.kind === 'mom') { c.beginPath(); c.ellipse(x, y + r * .5, r * 1.15, r * 1.5, 0, 0, TAU); c.fill(); if (who === 'hacer') { c.fillStyle = p.hair; c.beginPath(); c.arc(x, y - r * .95, r * .45, 0, TAU); c.fill(); } }
-    if (who === 'lina') { c.beginPath(); c.ellipse(x, y + r * .3, r * 1.08, r * 1.25, 0, 0, TAU); c.fill(); }
+    const p = spec(who); const id = idOf(who); c.fillStyle = shade(p.hair, -.15);
+    if (p.kind === 'mom' || p.kind === 'girl') { c.beginPath(); c.ellipse(x, y + r * .5, r * 1.15, r * (p.kind === 'girl' ? 1.2 : 1.5), 0, 0, TAU); c.fill(); if (id === 'hacer') { c.fillStyle = p.hair; c.beginPath(); c.arc(x, y - r * .95, r * .45, 0, TAU); c.fill(); } }
+    if (id === 'lina') { c.beginPath(); c.ellipse(x, y + r * .3, r * 1.08, r * 1.25, 0, 0, TAU); c.fill(); }
   }
   // saç aksesuarları
   const ACC = {
@@ -161,7 +162,7 @@ const Art = (() => {
 
   /* Tam karakter. Orijin: ayakların ortası. s: ölçek (1 => ~200px boy). o: {face, walk(0..1 faz), dir, hair (Lina için makeHair nesnesi), arms:'up'|'wave'|'hold', hairAcc, outfit, vx} */
   function char(c, who, x, y, s, o = {}) {
-    const p = P()[who]; const kid = p.kind === 'girl' || p.kind === 'boy';
+    const p = spec(who); const id = idOf(who); const kid = p.kind === 'girl' || p.kind === 'boy';
     const hs = kid ? .92 : 1.05; // boy ölçeği
     c.save(); c.translate(x, y); c.scale(s * hs, s * hs);
     const walk = o.walk ?? 0, sw = Math.sin(walk * TAU), sw2 = Math.sin(walk * TAU + Math.PI);
@@ -177,20 +178,20 @@ const Art = (() => {
     c.strokeStyle = legC; c.lineWidth = kid ? 14 : 18; c.lineCap = 'round';
     for (const [sx, sn] of [[-1, sw], [1, sw2]]) { c.beginPath(); c.moveTo(sx * 12, bodyBot); c.lineTo(sx * 12 + sn * 14, -6); c.stroke(); }
     // ayakkabılar
-    for (const [sx, sn] of [[-1, sw], [1, sw2]]) { c.fillStyle = who === 'lina' ? '#fff' : (p.kind === 'mom' ? '#c94a6a' : '#2b2118'); c.beginPath(); c.roundRect(sx * 12 + sn * 14 - 13, -10, 26, 12, 6); c.fill(); if (who === 'lina') { c.fillStyle = '#ff7a1a'; c.fillRect(sx * 12 + sn * 14 - 6, -8, 12, 3); } }
+    for (const [sx, sn] of [[-1, sw], [1, sw2]]) { c.fillStyle = id === 'lina' ? '#fff' : (p.kind === 'mom' ? '#c94a6a' : '#2b2118'); c.beginPath(); c.roundRect(sx * 12 + sn * 14 - 13, -10, 26, 12, 6); c.fill(); if (id === 'lina') { c.fillStyle = '#ff7a1a'; c.fillRect(sx * 12 + sn * 14 - 6, -8, 12, 3); } }
     // gövde
-    const of = who === 'lina' ? (OUTFITS[o.outfit || G.S.outfit] || OUTFITS.orange) : null;
+    const of = id === 'lina' ? (OUTFITS[o.outfit || G.S.outfit] || OUTFITS.orange) : null;
     const topColor = of ? of.color : p.top;
     c.fillStyle = topColor;
     if (p.kind === 'girl' || p.kind === 'mom') { // elbise
       c.beginPath(); c.moveTo(-bw * .5, bodyTop); c.lineTo(bw * .5, bodyTop); c.lineTo(bw * .95, bodyBot + 2); c.quadraticCurveTo(0, bodyBot + 10, -bw * .95, bodyBot + 2); c.closePath(); c.fill();
       c.fillStyle = 'rgba(255,255,255,.18)'; c.beginPath(); c.moveTo(-bw * .1, bodyTop); c.lineTo(bw * .12, bodyTop); c.lineTo(bw * .3, bodyBot + 3); c.lineTo(-bw * .05, bodyBot + 5); c.fill();
-      if (who === 'lina') { c.fillStyle = '#fff'; c.beginPath(); c.moveTo(-bw * .28, bodyTop); c.lineTo(bw * .28, bodyTop); c.lineTo(0, bodyTop + 16); c.closePath(); c.fill(); }
+      if (id === 'lina') { c.fillStyle = '#fff'; c.beginPath(); c.moveTo(-bw * .28, bodyTop); c.lineTo(bw * .28, bodyTop); c.lineTo(0, bodyTop + 16); c.closePath(); c.fill(); }
       if (of && of.print) { c.font = '22px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(of.print, 0, (bodyTop + bodyBot) / 2 + 4); }
     } else { // tişört/gömlek + pantolon
       c.beginPath(); c.roundRect(-bw * .5, bodyTop, bw, bodyBot - bodyTop + 6, 14); c.fill();
       c.fillStyle = shade(topColor, -.2); c.fillRect(-bw * .5, bodyBot - 6, bw, 6);
-      if (who === 'doruk') { c.fillStyle = '#fff'; c.font = '600 18px Fredoka'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('10', 0, (bodyTop + bodyBot) / 2 + 2); }
+      if (p.number) { c.fillStyle = '#fff'; c.font = '600 18px Fredoka'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(p.number, 0, (bodyTop + bodyBot) / 2 + 2); }
     }
     // kollar
     c.strokeStyle = p.skin; c.lineWidth = kid ? 11 : 14;
@@ -216,9 +217,10 @@ const Art = (() => {
 
   // avatar canvas (paneller için)
   function avatar(who, size = 84, o = {}) {
+    const id = idOf(who);
     const cv = document.createElement('canvas'); cv.width = cv.height = size * 2; const c = cv.getContext('2d'); c.scale(2, 2);
     const r = size * .3, x = size / 2, y = size * .55;
-    c.fillStyle = who === 'lina' ? '#ffe8d4' : '#e6f1fb'; c.beginPath(); c.arc(size / 2, size / 2, size / 2, 0, TAU); c.fill();
+    c.fillStyle = id === 'lina' ? '#ffe8d4' : '#e6f1fb'; c.beginPath(); c.arc(size / 2, size / 2, size / 2, 0, TAU); c.fill();
     hairBack(c, who, x, y, r); face(c, who, x, y, r, o); hairFront(c, who, x, y, r, o);
     return cv;
   }
@@ -279,6 +281,7 @@ const Art = (() => {
       c.fillStyle = '#fff'; c.beginPath(); c.moveTo(0, -8); c.lineTo(0, -60); c.lineTo(34, -8); c.closePath(); c.fill(); c.fillStyle = i % 2 ? '#ff7a1a' : '#ff5c8a'; c.beginPath(); c.moveTo(-4, -8); c.lineTo(-4, -46); c.lineTo(-24, -8); c.closePath(); c.fill();
       c.fillStyle = '#2b2118'; c.beginPath(); c.moveTo(-30, -6); c.lineTo(38, -6); c.lineTo(28, 6); c.lineTo(-22, 6); c.closePath(); c.fill(); c.restore(); }
   }
+  /* t: sabit faz — konuma bağlanırsa titrer */
   function seagull(c, x, y, t, s = 1) { c.strokeStyle = '#fff'; c.lineWidth = 3 * s; c.lineCap = 'round'; const f = Math.sin(t * 9) * 8 * s; c.beginPath(); c.moveTo(x - 16 * s, y + f); c.quadraticCurveTo(x - 8 * s, y - 6 * s, x, y); c.quadraticCurveTo(x + 8 * s, y - 6 * s, x + 16 * s, y + f); c.stroke(); }
 
   return { makeHair, face, hairFront, hairBack, char, lina, avatar, sky, skyColors, clouds, sea, skyline, sailboats, seagull, shade, ACC, OUTFITS, accessory };

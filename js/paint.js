@@ -43,7 +43,7 @@ G.scenes.paint = (() => {
     bar.querySelector('[data-a=clear]').onclick = () => { snapshot(); lc.clearRect(0, 0, layer.width, layer.height); Audio.sfx('whoosh'); };
     bar.querySelector('[data-a=save]').onclick = savePic;
   }
-  function pickStamp() { const p = G.panel(`<h2>Damga seç</h2><div class="grid">${STAMPS.map(s => `<div class="item ${s === stamp ? 'sel' : ''}" data-s="${s}"><div class="em">${s}</div></div>`).join('')}</div>`, 'bottom'); p.querySelectorAll('.item').forEach(el => el.onclick = () => { stamp = el.dataset.s; bar.querySelector('[data-t=stamp] .em').textContent = stamp; G.closePanels(); Audio.sfx('pop'); }); }
+  function pickStamp() { const all = STAMPS.concat(Store.extraStamps()); const p = G.panel(`<h2>Damga seç</h2><div class="grid">${all.map(s => `<div class="item ${s === stamp ? 'sel' : ''}" data-s="${s}"><div class="em">${s}</div></div>`).join('')}</div>`, 'bottom'); p.querySelectorAll('.item').forEach(el => el.onclick = () => { stamp = el.dataset.s; bar.querySelector('[data-t=stamp] .em').textContent = stamp; G.closePanels(); Audio.sfx('pop'); }); }
   function composite() { const out = mk(layer.width, layer.height); const c = out.getContext('2d'); c.fillStyle = '#fffdf8'; c.fillRect(0, 0, out.width, out.height); c.drawImage(tmplCv, 0, 0); c.drawImage(layer, 0, 0); return out; }
   function savePic() {
     const out = composite(); const th = mk(320, Math.round(320 * out.height / out.width)); th.getContext('2d').drawImage(out, 0, 0, th.width, th.height);

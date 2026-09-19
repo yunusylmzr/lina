@@ -30,7 +30,7 @@ G.scenes.family = (() => {
   return {
     landscape: true, showHome: true, showStars: true,
     enter() { hair = Art.makeHair(6); round = 0; scores = [0, 0]; state = 'pick'; Audio.ambience(false);
-      const p = G.panel(`<h2>Aile Akşamı</h2><p class="lead">İki kişilik! iPad'i aranıza koyun: sol yarı Lina'nın, sağ yarı rakibin. Kiminle oynuyorsun?</p><div class="grid" id="r">${['serkan', 'hacer', 'yunus', 'betul', 'doruk'].map(w => `<div class="item" data-w="${w}"><canvas></canvas>${G.PEOPLE[w].name}</div>`).join('')}</div>`);
+      const p = G.panel(`<h2>Aile Akşamı</h2><p class="lead">İki kişilik! iPad'i aranıza koyun: sol yarı Lina'nın, sağ yarı rakibin. Kiminle oynuyorsun?</p><div class="grid" id="r">${G.cast().map(w => `<div class="item" data-w="${w}"><canvas></canvas>${G.PEOPLE[w].name}</div>`).join('')}</div>`);
       p.querySelectorAll('.item').forEach(el => { el.querySelector('canvas').replaceWith(Art.avatar(el.dataset.w, 72)); el.onclick = () => { rival = el.dataset.w; G.closePanels(); Audio.sfx('pop'); startRound(); }; }); },
     down(p) { if (state !== 'play') return; tap(p.x < half() ? 0 : 1, p); },
     update(dt) { if (state === 'play') { roundT += dt;

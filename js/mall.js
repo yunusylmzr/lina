@@ -10,7 +10,7 @@ G.scenes.mall = (() => {
   ];
   const POOL = ['🍦', '📚', '🎀', '👟', '🧸', '🍿', '🎧', '🕶️', '🧢', '🍩', '🎈', '🧩', '🍕', '🎮', '💄', '🧣', '⌚', '🥨', '🎁', '🍭', '🧃', '🪀', '🎨', '🍣'];
   const SHOPS = ['Kitap', 'Oyuncak', 'Dondurma', 'Spor', 'Moda', 'Kafe', 'Sinema', 'Şeker', 'Müzik', 'Hobi', 'Fırın', 'Suşi'];
-  let mall, level, windows, list, found, t, timeLimit, state, hair, lina, doruk, hint, esc, total, wrongT;
+  let mall, level, windows, list, found, t, timeLimit, state, hair, lina, doruk, hint, esc, total, wrongT, buddy;
   const layout = () => { const top = Math.max(70, G.H * .12), bottom = G.H - 40; const fh = (bottom - top) / mall.floors; return { top, bottom, fh }; };
   function build() {
     mall = MALLS[level % MALLS.length]; const L = layout(); windows = []; const perFloor = Math.max(5, Math.min(9, Math.floor(G.W / 150)));
@@ -29,18 +29,18 @@ G.scenes.mall = (() => {
   }
   function finishLevel() {
     state = 'done'; Audio.sfx('win'); total += Math.round(timeLimit - t) * 2 + list.length * 20;
-    const p = G.panel(`<h2>${mall.name} bitti!</h2><p class="lead">Mehmet Doruk: “Sıradaki AVM'ye gidelim mi?”</p><p>Süreden <b>${Math.max(0, Math.round(timeLimit - t))}</b> saniye kaldı. Toplam <b>${total}</b> puan.</p>
+    const p = G.panel(`<h2>${mall.name} bitti!</h2><p class="lead">${G.PEOPLE[buddy].name}: “Sıradaki AVM'ye gidelim mi?”</p><p>Süreden <b>${Math.max(0, Math.round(timeLimit - t))}</b> saniye kaldı. Toplam <b>${total}</b> puan.</p>
       <div class="actions"><button class="btn ghost" data-a="end">Bugünlük yeter</button><button class="btn mint" data-a="next">Sıradaki: ${MALLS[(level + 1) % MALLS.length].name}</button></div>`);
     p.querySelector('[data-a=next]').onclick = () => { G.closePanels(); level++; build(); Audio.sfx('whoosh'); };
     p.querySelector('[data-a=end]').onclick = () => { G.closePanels(); done(); };
   }
-  function done() { const stars = level >= 3 ? 3 : level >= 1 ? 2 : found > 0 ? 1 : 0; G.finish('mall', total, stars, `<b>${level + (state === 'done' ? 1 : 0)}</b> AVM gezdiniz: ${MALLS.slice(0, Math.min(MALLS.length, level + 1)).map(m => m.name).join(', ')}. Mehmet Doruk yorgun ama mutlu.`); }
+  function done() { const stars = level >= 3 ? 3 : level >= 1 ? 2 : found > 0 ? 1 : 0; G.finish('mall', total, stars, `<b>${level + (state === 'done' ? 1 : 0)}</b> AVM gezdiniz: ${MALLS.slice(0, Math.min(MALLS.length, level + 1)).map(m => m.name).join(', ')}. ${G.PEOPLE[buddy].name} yorgun ama mutlu.`); }
   function timeUp() { state = 'over'; Audio.sfx('lose'); setTimeout(done, 700); }
   return {
     landscape: true, showHome: true, showStars: true,
-    enter() { level = 0; total = 0; hair = Art.makeHair(6); Audio.ambience(false); build(); state = 'intro';
-      const p = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">Mehmet Doruk</div><h2 style="font-size:28px">AVM Turu</h2></div></div><p class="lead">“Anadolu Yakası'nın AVM'lerini geziyoruz! Alttaki listede ne varsa vitrinlerde bul ve dokun. Süre bitmeden hepsini bulursak sıradaki AVM'ye geçeriz.”</p><p>Yanlış vitrine dokunursan 2 saniye kaybedersin.</p><div class="actions center"><button class="btn big" id="go">Viaport'a gidelim</button></div>`);
-      p.querySelector('#av').replaceWith(Art.avatar('doruk')); p.querySelector('#go').onclick = () => { G.closePanels(); state = 'play'; Audio.sfx('pop'); }; },
+    enter() { level = 0; total = 0; hair = Art.makeHair(6); buddy = G.guests()[0] || 'hacer'; Audio.ambience(false); build(); state = 'intro';
+      const p = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">${G.PEOPLE[buddy].name}</div><h2 style="font-size:28px">AVM Turu</h2></div></div><p class="lead">“Anadolu Yakası'nın AVM'lerini geziyoruz! Alttaki listede ne varsa vitrinlerde bul ve dokun. Süre bitmeden hepsini bulursak sıradaki AVM'ye geçeriz.”</p><p>Yanlış vitrine dokunursan 2 saniye kaybedersin.</p><div class="actions center"><button class="btn big" id="go">Viaport'a gidelim</button></div>`);
+      p.querySelector('#av').replaceWith(Art.avatar(buddy)); p.querySelector('#go').onclick = () => { G.closePanels(); state = 'play'; Audio.sfx('pop'); }; },
     down(p) { if (state !== 'play') return;
       // eşyaya dokunuş
       for (const w of windows) for (const it of w.items) { if (it.found) continue; const ix = w.x + it.dx, iy = w.y + w.h / 2 + it.dy; if (Math.hypot(p.x - ix, p.y - iy) < 26) {
@@ -72,7 +72,7 @@ G.scenes.mall = (() => {
       // Lina ve Doruk mevcut katta
       const fy = L.top + (lina.f + 1) * L.fh - 10;
       const s = Math.min(.5, L.fh / 240);
-      c.save(); c.globalAlpha = .95; Art.lina(c, lina.x - 20, fy, s, { hair, dt: 1 / 60, wind: 10, face: 'happy', blink: Math.sin(T * 3) > .96 }); Art.char(c, 'doruk', lina.x + 40, fy, s, { face: wrongT > 0 ? 'wow' : 'happy', arms: 'wave' }); c.restore();
+      c.save(); c.globalAlpha = .95; Art.lina(c, lina.x - 20, fy, s, { hair, dt: 1 / 60, wind: 10, face: 'happy', blink: Math.sin(T * 3) > .96 }); Art.char(c, buddy, lina.x + 40, fy, s, { face: wrongT > 0 ? 'wow' : 'happy', arms: 'wave' }); c.restore();
       // üst bilgi
       c.fillStyle = 'rgba(15,42,68,.8)'; c.beginPath(); c.roundRect(W / 2 - 200, Math.max(10, H * .02), 400, 46, 23); c.fill();
       G.txt(c, `${mall.name} · ${mall.where}`, W / 2 - 60, Math.max(10, H * .02) + 23, 18, '#fff');

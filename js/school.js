@@ -8,7 +8,7 @@ G.scenes.school = (() => {
   function spawn() {
     const x = G.W + 120; const r = Math.random();
     if (r < .5) { const kind = G.pick(['puddle', 'scooter', 'bench', 'gull', 'sign']); obs.push({ kind, x, w: kind === 'bench' ? 110 : kind === 'puddle' ? 120 : 70, low: kind === 'gull' || kind === 'sign', bob: Math.random() * 6 }); }
-    else { const n = 3 + Math.floor(Math.random() * 3); const arc = Math.random() < .4; for (let i = 0; i < n; i++) items.push({ x: x + i * 62, y: arc ? -120 - Math.sin(i / (n - 1) * Math.PI) * 90 : -70 - (Math.random() < .3 ? 110 : 0), em: G.pick(ITEMS), got: 0 }); }
+    else { const n = 3 + Math.floor(Math.random() * 3); const arc = Math.random() < .4; for (let i = 0; i < n; i++) items.push({ x: x + i * 62, y: arc ? -120 - Math.sin(i / (n - 1) * Math.PI) * 90 : -70 - (Math.random() < .3 ? 110 : 0), em: G.pick(ITEMS), got: 0, ph: Math.random() * 6.28 }); }
   }
   function jump() { if (state !== 'run') return; if (lina.jumps < 2 && lina.slide <= 0) { lina.vy = lina.jumps === 0 ? -820 : -680; lina.jumps++; lina.y -= 1; Audio.sfx('jump'); } }
   function slide() { if (state !== 'run') return; if (lina.y >= -1) { lina.slide = .75; Audio.sfx('whoosh'); } else { lina.vy = Math.max(lina.vy, 900); } }
@@ -58,7 +58,7 @@ G.scenes.school = (() => {
       // palmiyeler
       for (let i = 0; i < 5; i++) { const x = ((i * 420 - dist * .55) % (W + 300) + W + 300) % (W + 300) - 150; c.strokeStyle = '#8b5a2b'; c.lineWidth = 10; c.beginPath(); c.moveTo(x, gy - 40); c.quadraticCurveTo(x + 10, gy - 160, x + 4, gy - 230); c.stroke(); c.strokeStyle = '#3f9e4a'; c.lineWidth = 9; c.lineCap = 'round'; for (let k = 0; k < 6; k++) { const a = -Math.PI / 2 + (k - 2.5) * .5; c.beginPath(); c.moveTo(x + 4, gy - 230); c.quadraticCurveTo(x + 4 + Math.cos(a) * 60, gy - 230 + Math.sin(a) * 60 - 20, x + 4 + Math.cos(a) * 95, gy - 230 + Math.sin(a) * 95 + 30); c.stroke(); } }
       // eşyalar
-      for (const it of items) { const y = gy + it.y; c.globalAlpha = it.got ? Math.max(0, 1 - it.got * 2.5) : 1; c.fillStyle = 'rgba(255,255,255,.85)'; c.beginPath(); c.arc(it.x, y + Math.sin(T * 4 + it.x) * 4, 26, 0, 7); c.fill(); c.fillStyle = '#000'; c.font = '30px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(it.em, it.x, y + 2 + Math.sin(T * 4 + it.x) * 4); c.globalAlpha = 1; }
+      for (const it of items) { const bob = Math.sin(T * 3 + it.ph) * 4, y = gy + it.y + bob; c.globalAlpha = it.got ? Math.max(0, 1 - it.got * 2.5) : 1; c.fillStyle = 'rgba(255,255,255,.85)'; c.beginPath(); c.arc(it.x, y, 26, 0, 7); c.fill(); c.fillStyle = '#000'; c.font = '30px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(it.em, it.x, y + 2); c.globalAlpha = 1; }
       // engeller
       for (const o of obs) { c.save(); c.translate(o.x, gy); c.globalAlpha = o.hit ? .45 : 1;
         if (o.kind === 'puddle') { c.fillStyle = '#7cc4f5'; c.beginPath(); c.ellipse(0, 0, 60, 12, 0, 0, 7); c.fill(); c.fillStyle = 'rgba(255,255,255,.5)'; c.beginPath(); c.ellipse(-15, -3, 20, 4, 0, 0, 7); c.fill(); }
