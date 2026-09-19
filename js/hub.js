@@ -66,15 +66,16 @@ G.scenes.hub = (() => {
       hair = hair || Art.makeHair(7); cur = nextIdx(); const p = stopXY(STOPS[cur]); lx = p.x; ly = p.y; walkTo = null; Audio.ambience(true);
       seagulls = Array.from({ length: 3 }, (_, i) => ({ x: Math.random() * G.W, y: 40 + i * 30, v: 25 + i * 8, s: .8, ph: Math.random() * 6 }));
       const dock = document.createElement('div'); dock.id = 'dock';
-      dock.innerHTML = `<button class="chip" data-a="diary">📔 Günlük</button><button class="chip hero" data-a="store">▶ Serkan Dijital</button><button class="chip" data-a="ward">👗 Gardırop</button>`;
+      dock.innerHTML = `<button class="chip" data-a="diary">📔 Günlük</button><button class="chip hero" data-a="store">▶ Serkan Dijital</button><button class="chip" data-a="ward">👗 Gardırop</button><button class="chip" data-a="set">⚙︎ Ayarlar</button>`;
       dock.querySelector('[data-a=diary]').onclick = diary;
       dock.querySelector('[data-a=store]').onclick = () => { Audio.sfx('pop'); G.go('store'); };
       dock.querySelector('[data-a=ward]').onclick = () => { Audio.sfx('tap'); G.go('wardrobe'); };
+      dock.querySelector('[data-a=set]').onclick = () => { Audio.unlock(); Audio.sfx('tap'); Settings.open(); };
       document.getElementById('ui').appendChild(dock);
       if (STOPS.every(s => G.S.done[s.id])) setTimeout(dayEnd, 600);
       else if (!G.S.seen.hub) {
         G.S.seen.hub = 1; G.save();
-        const pnl = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">Hacer</div><h2 style="font-size:28px">Hoş geldin Lina!</h2></div></div><p class="lead">“Bu Tuzla sahili. Her durakta bir macera var. Bir yere dokun, oraya yürü ve yıldız topla. Yıldızlarla Serkan Dijital'den kıyafet, şarkı ve damga açabilirsin.”</p><div class="actions"><button class="btn" id="ok">Hadi başlayalım</button></div>`);
+        const pnl = G.panel(`<div class="who"><canvas id="av"></canvas><div><div class="name">Hacer</div><h2 style="font-size:28px">Hoş geldin Lina!</h2></div></div><p class="lead">“Bu Tuzla sahili. Her durakta bir macera var. Bir yere dokun, oraya yürü ve yıldız topla. Yıldızlarla Serkan Dijital'den kıyafet, şarkı ve damga açabilirsin. Yeni oyuncu eklemek ya da oyunu sıfırlamak için alttaki Ayarlar'a bak.”</p><div class="actions"><button class="btn" id="ok">Hadi başlayalım</button></div>`);
         pnl.querySelector('#av').replaceWith(Art.avatar('hacer')); pnl.querySelector('#ok').onclick = () => { G.closePanels(); Audio.sfx('pop'); };
       }
     },

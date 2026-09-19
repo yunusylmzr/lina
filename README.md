@@ -15,13 +15,13 @@ Lina için yapılmış, iPad'de (Safari) oynanan kişisel bir oyun. Tuzla sahili
 | Aile Akşamı | Aynı iPad'de iki kişilik: refleks, sayma, suşi yakalama | Seçtiğin rakip |
 
 ## Oyuncular
-Çekirdek kadro Lina, annesi Hacer ve babası Serkan. Giriş ekranındaki **Oyuncular** bölümünden en fazla üç kişi daha eklenir: isim, saç/ten/kıyafet rengi, gözlük ve sakal seçilir. Eklenen karakterler AVM turunda, suşi siparişlerinde ve aile akşamında oyuna girer.
+Çekirdek kadro Lina, annesi Hacer ve babası Serkan. Haritanın altındaki **Ayarlar**'dan en fazla üç kişi daha eklenir: isim, saç/ten/kıyafet rengi, gözlük ve sakal seçilir. Eklenen karakterler AVM turunda, suşi siparişlerinde ve aile akşamında oyuna girer.
 
 ## Serkan Dijital
 Oyunun içindeki mağaza. Para yok, her şey toplanan yıldızlarla açılır: kıyafetler, saç aksesuarları, piyano için ek şarkılar ve atölye için damga paketleri.
 
 ## Baştan başlamak
-Giriş ekranında ilerleme varken **Baştan başla** düğmesi çıkar (Oyuncular panelinde de var). İki seçenek sunar: *İlerlemeyi sil* yıldızları, bölüm yıldızlarını, en iyi skorları, gün sayısını ve mağazadan açılanları sıfırlar, eklenen karakterleri ve resim galerisini korur; *Her şeyi sil* onları da temizler.
+Haritanın altındaki **Ayarlar** panelinde **Baştan başla** düğmesi var. İki seçenek sunar: *İlerlemeyi sil* yıldızları, bölüm yıldızlarını, en iyi skorları, gün sayısını ve mağazadan açılanları sıfırlar, eklenen karakterleri ve resim galerisini korur; *Her şeyi sil* onları da temizler.
 
 ## Teknik
 - Saf HTML/CSS/JS, tek `canvas` + DOM paneller; harici kütüphane yok. Ses WebAudio ile sentezlenir.
