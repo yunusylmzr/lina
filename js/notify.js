@@ -28,7 +28,7 @@ const Notify = (() => {
     return M[i++ % M.length];
   }
   function show(msg) {
-    if (!SCENES.includes(G.scene) || document.querySelector('#ui .panel')) return;
+    if (document.hidden || !SCENES.includes(G.scene) || document.querySelector('#ui .panel')) return;
     hide();
     const [kind, who, text] = msg || pick();
     const known = G.PEOPLE[who];

@@ -33,6 +33,7 @@ Haritanın altındaki **Ayarlar** panelinde **Baştan başla** düğmesi var. İ
 - Saf HTML/CSS/JS, tek `canvas` + DOM paneller; harici kütüphane yok. Ses WebAudio ile sentezlenir.
 - Lina'nın saçı Verlet zinciriyle simüle edilir (`js/art.js`).
 - Kayıt `localStorage`'da (`lina-turuncu-gun-v1`).
+- Sekme arkaplana alınınca ses motoru askıya alınır (`visibilitychange`), geri dönünce kaldığı yerden devam eder.
 - Arka plan siluetindeki binalar kaydırmada kimliğini korur, bazılarının çatısında Lina'ya özel tabelalar vardır (LİNA TOWERS, TURUNCU KULE…).
 - iPad'de **Paylaş → Ana Ekrana Ekle** ile tam ekran açılır.
 

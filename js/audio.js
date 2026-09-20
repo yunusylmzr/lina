@@ -2,10 +2,18 @@
 const Audio = (() => {
   let ac = null, master = null, amb = null, ambGain = null;
   function unlock() {
-    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    if (document.hidden) return;
+    if (ac) { if (ac.state === 'suspended' && !asleep) ac.resume(); return; }
     ac = new (window.AudioContext || window.webkitAudioContext)();
     master = ac.createGain(); master.gain.value = G.S.muted ? 0 : 0.9; master.connect(ac.destination);
     startAmbience();
+  }
+  // sekme arkaplana alınınca sesi tamamen durdur (Android'de sekme açık kalınca çalmaya devam ediyordu)
+  let asleep = false;
+  function setActive(on) {
+    if (!ac) return;
+    if (on) { asleep = false; if (!G.S.muted && ac.state === 'suspended') ac.resume(); if (ambOn) ambience(true); }
+    else { asleep = true; ambience(false, false); if (ac.state === 'running') ac.suspend(); }
   }
   function setMuted(m) { G.S.muted = m; G.save(); if (master) master.gain.setTargetAtTime(m ? 0 : 0.9, ac.currentTime, .05); }
   function tone(freq, dur = .2, type = 'sine', vol = .3, t0 = 0, slide = 0) {
@@ -62,6 +70,7 @@ const Audio = (() => {
     const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = .11; lg.gain.value = .045; lfo.connect(lg); lg.connect(ambGain.gain);
     amb.connect(f); f.connect(ambGain); ambGain.connect(master); amb.start(); lfo.start();
   }
-  function ambience(on) { if (ambGain) ambGain.gain.setTargetAtTime(on ? .06 : 0, ac.currentTime, .8); }
-  return { unlock, sfx, note, tone, N, setMuted, ambience, get ctx() { return ac; } };
+  let ambOn = false;
+  function ambience(on, remember = true) { if (remember) ambOn = on; if (ambGain) ambGain.gain.setTargetAtTime(on ? .06 : 0, ac.currentTime, .8); }
+  return { unlock, sfx, note, tone, N, setMuted, setActive, ambience, get asleep() { return asleep; }, get ctx() { return ac; } };
 })();
