@@ -7,7 +7,7 @@ Lina için yapılmış, iPad'de (Safari) oynanan kişisel bir oyun. Tuzla sahili
 ## Duraklar
 | Durak | Oyun | Kim var |
 |---|---|---|
-| Okul Yolu | Sahil boyunca koşu: dokun → zıpla, aşağı kaydır → kay; çanta eşyalarını topla | Hacer yolluyor |
+| Okul Yolu | Sahil boyunca koşu: ekrandaki ZIPLA ve KAY düğmeleri (ya da dokunma ve aşağı kaydırma); çanta eşyalarını topla | Hacer yolluyor |
 | Piyano | Düşen notalar, 12 tuş, şarkı listesi | Serkan dans eder |
 | Karalama Atölyesi | Kalem, fırça, sim, neon, damga; boyama şablonları; galeri | Hacer |
 | AVM Turu | Anadolu Yakası AVM'lerinde (Viaport, Hilltown, Emaar, Akasya, Buyaka, Piazza) vitrinlerde gizli eşya avı | Eklediğin karakter ya da Hacer |

@@ -3,7 +3,7 @@ G.scenes.school = (() => {
   const DUR = 55; // saniye: okula varış
   const ITEMS = ['✏️', '📒', '🍎', '🧃', '📐', '🖍️', '📚', '🎒'];
   const SIGNS = ['LİNA TOWERS', 'TURUNCU KULE', 'LİNA MARİNA', 'PORTAKAL PLAZA', 'SAHİL REZİDANS', 'LİNA KONAKLARI'];
-  let hair, t, speed, dist, lina, obs, items, score, bag, hits, state, walkT, endX, camShake, msgs, spawnT, cloudsY;
+  let hair, t, speed, dist, lina, obs, items, score, bag, hits, state, walkT, endX, camShake, msgs, spawnT, cloudsY, pad;
   const groundY = () => G.H * .80;
   function reset() { hair = Art.makeHair(7); t = 0; speed = 330; dist = 0; lina = { y: 0, vy: 0, jumps: 0, slide: 0, hurt: 0 }; obs = []; items = []; score = 0; bag = 0; hits = 0; state = 'intro'; walkT = 0; camShake = 0; msgs = []; spawnT = 1.2; }
   function spawn() {
@@ -13,6 +13,19 @@ G.scenes.school = (() => {
   }
   function jump() { if (state !== 'run') return; if (lina.jumps < 2 && lina.slide <= 0) { lina.vy = lina.jumps === 0 ? -820 : -680; lina.jumps++; lina.y -= 1; Audio.sfx('jump'); } }
   function slide() { if (state !== 'run') return; if (lina.y >= -1) { lina.slide = .75; Audio.sfx('whoosh'); } else { lina.vy = Math.max(lina.vy, 900); } }
+  function makePad() {
+    pad = document.createElement('div'); pad.id = 'runpad';
+    pad.innerHTML = `<button class="padbtn left" data-a="slide"><span class="ic">▼</span><span class="lb">KAY</span></button>
+      <button class="padbtn right" data-a="jump"><span class="ic">▲</span><span class="lb">ZIPLA</span></button>`;
+    const hit = (sel, fn) => {
+      const b = pad.querySelector(sel);
+      b.addEventListener('pointerdown', e => { e.preventDefault(); b.classList.add('on'); fn(); });
+      const off = () => b.classList.remove('on');
+      b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('pointerleave', off);
+    };
+    hit('[data-a=jump]', jump); hit('[data-a=slide]', slide);
+    document.getElementById('ui').appendChild(pad);
+  }
   function end() {
     state = 'done'; Audio.sfx('bell');
     const stars = bag >= 14 ? 3 : bag >= 8 ? 2 : 1; const sc = bag * 10 + Math.max(0, 30 - hits * 10);
@@ -20,7 +33,7 @@ G.scenes.school = (() => {
   }
   return {
     landscape: true, showHome: true, showStars: true,
-    enter() { reset(); Audio.ambience(true); const p = G.panel(`<h2>Okul Yolu</h2><p class="lead">Tuzla sahilinden okula koş. <b>Dokun</b> → zıpla (iki kez zıplayabilirsin). <b>Aşağı kaydır</b> → martı ve tabelaların altından kay.</p><p>Çanta eşyalarını topla, su birikintilerine basma. ${DUR} saniyede okuldasın.</p><div class="actions center"><button class="btn big" id="go">Koş!</button></div>`); p.querySelector('#go').onclick = () => { G.closePanels(); state = 'run'; Audio.sfx('whoosh'); }; },
+    enter() { reset(); Audio.ambience(true); makePad(); const p = G.panel(`<h2>Okul Yolu</h2><p class="lead">Tuzla sahilinden okula koş. Sağdaki <b>ZIPLA</b> düğmesine bas, iki kez basarsan çift zıplar. Soldaki <b>KAY</b> düğmesi martı ve tabelaların altından kaydırır.</p><p style="font-size:14px;color:var(--muted)">İstersen ekranın ortasına dokunarak da zıplayabilir, parmağını aşağı kaydırarak kayabilirsin.</p><p>Çanta eşyalarını topla, su birikintilerine basma. ${DUR} saniyede okuldasın.</p><div class="actions center"><button class="btn big" id="go">Koş!</button></div>`); p.querySelector('#go').onclick = () => { G.closePanels(); state = 'run'; Audio.sfx('whoosh'); }; },
     down(p) { if (state !== 'run') return; p.t0 = G.T; },
     up(p) { if (state !== 'run') return; const dy = p.y - (p.sy ?? p.y); if (dy > 40) { if (!p.meta?.slid) slide(); } else if (Math.abs(dy) < 60) jump(); },
     move(p) { if (state !== 'run' || p.sy == null || !p.meta) return; if (p.y - p.sy > 60 && !p.meta.slid) { p.meta.slid = 1; slide(); } },
@@ -87,7 +100,10 @@ G.scenes.school = (() => {
       G.txt(c, `🎒 ${bag}`, W / 2 - 80, Math.max(10, H * .02) + 23, 22, '#fff');
       G.txt(c, state === 'done' ? 'Zil çaldı!' : `🔔 ${Math.ceil(left)} sn`, W / 2 + 60, Math.max(10, H * .02) + 23, 22, left < 10 && state === 'run' ? '#ffd166' : '#fff');
       // ilerleme çubuğu
-      c.fillStyle = 'rgba(255,255,255,.25)'; c.fillRect(W * .2, H - 18, W * .6, 8); c.fillStyle = '#ff7a1a'; c.fillRect(W * .2, H - 18, W * .6 * G.clamp(t / DUR, 0, 1), 8); c.font = '20px serif'; c.textAlign = 'center'; c.fillText('🏫', W * .8 + 14, H - 12);
-    }
+      const pby = H - 150;
+      c.fillStyle = 'rgba(255,255,255,.3)'; c.fillRect(W * .26, pby, W * .48, 8); c.fillStyle = '#ff7a1a'; c.fillRect(W * .26, pby, W * .48 * G.clamp(t / DUR, 0, 1), 8);
+      c.fillStyle = '#000'; c.font = '20px serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🏫', W * .74 + 16, pby + 4);
+    },
+    exit() { G.closePanels(); pad?.remove(); pad = null; }
   };
 })();

@@ -56,7 +56,9 @@ const G = (() => {
     document.getElementById('paintbar')?.remove();
     sceneName = name; scene = scenes[name];
     T = 0;
-    document.getElementById('btn-home').hidden = !scene.showHome;
+    const hb = document.getElementById('btn-home');
+    hb.hidden = !scene.showHome;
+    if (scene.showHome) { hb.classList.remove('pulse'); void hb.offsetWidth; hb.classList.add('pulse'); setTimeout(() => hb.classList.remove('pulse'), 7000); }
     document.getElementById('stars').hidden = !scene.showStars;
     updateStars();
     if (scene.enter) scene.enter(arg);
